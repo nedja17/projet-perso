@@ -11,6 +11,11 @@
 
     <style>
         /* --- DESIGN GLOBAL --- */
+        :root {
+            /* Couleur orange par défaut pour la page de connexion */
+            --theme-color: #ff9800; 
+        }
+
         *, *::before, *::after { box-sizing: border-box; }
 
         body {
@@ -53,9 +58,13 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.3);
             line-height: 1.5;
             color: #e0e0e0;
+            transition: border-color 0.3s ease;
         }
-        .top-left-clock { left: 30px; border: 1px solid #64b5f6; }
-        .top-right-user { right: 30px; border: 1px solid #ff9800; text-align: left; display: none; }
+        .top-left-clock { left: 30px; border: 1px solid var(--theme-color); }
+        .top-left-clock span { color: var(--theme-color); font-weight: bold; transition: color 0.3s ease; }
+        
+        .top-right-user { right: 30px; border: 1px solid var(--theme-color); text-align: left; display: none; }
+        .top-right-user span { color: var(--theme-color); font-weight: bold; transition: color 0.3s ease; }
         
         h1 { color: #ff9800; letter-spacing: 1px; margin-bottom: 15px; font-size: 2.5em; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); }
         
@@ -86,6 +95,12 @@
         
         #btn-history-ent { border: 1px solid #9c27b0; }
         #btn-history-ent:hover, #btn-history-ent.active { background-color: #9c27b0; color: white; }
+
+        #btn-stations { border: 1px solid #ff5722; }
+        #btn-stations:hover, #btn-stations.active { background-color: #ff5722; color: white; }
+
+        #btn-stocks { border: 1px solid #8d6e63; }
+        #btn-stocks:hover, #btn-stocks.active { background-color: #8d6e63; color: white; }
         
         #btn-candidatures { border: 1px solid #1976d2; }
         #btn-candidatures:hover, #btn-candidatures.active { background-color: #1976d2; color: white; }
@@ -124,7 +139,7 @@
         .btn-green { background: linear-gradient(45deg, #43a047, #2e7d32); color: white; }
         .btn-small { width: auto; padding: 8px 12px; margin-top: 0; font-size: 0.9em; }
         
-        .btn-action { cursor: pointer; padding: 4px 6px; border-radius: 4px; border: none; margin: 2px; font-size: 0.9em; transition: 0.2s; vertical-align: middle; }
+        .btn-action { cursor: pointer; padding: 4px 6px; border-radius: 4px; border: none; margin: 2px; font-size: 0.9em; transition: 0.2s; vertical-align: middle; font-weight:bold; }
         .btn-action:hover { transform: scale(1.1); filter: brightness(1.2); }
         .btn-accept { background-color: #43a047; color: white; }
         .btn-reject { background-color: #d32f2f; color: white; }
@@ -134,9 +149,11 @@
         .history-table { width: 100%; table-layout: fixed; border-collapse: collapse; margin-top: 10px; text-align: left; background-color: rgba(30, 30, 30, 0.8); border-radius: 8px; overflow: hidden; }
         .history-table th, .history-table td { padding: 15px; border-bottom: 1px solid #444; vertical-align: middle; word-wrap: break-word; font-size: 0.9em;}
         
-        /* THÈMES DES EN-TÊTES DE TABLEAUX (La bande orange/verte/violette) */
+        /* THÈMES DES EN-TÊTES DE TABLEAUX */
         #history-screen .history-table th { background-color: rgba(76, 175, 80, 0.2); color: #4caf50; font-weight: bold; }
         #history-ent-screen .history-table th { background-color: rgba(156, 39, 176, 0.2); color: #ce93d8; font-weight: bold; }
+        #stations-screen .history-table th { background-color: rgba(255, 87, 34, 0.2); color: #ff5722; font-weight: bold; }
+        #stocks-screen .history-table th { background-color: rgba(141, 110, 99, 0.2); color: #8d6e63; font-weight: bold; }
         #candidatures-screen .history-table th { background-color: rgba(25, 118, 210, 0.2); color: #64b5f6; font-weight: bold; }
         #logs-screen .history-table th { background-color: rgba(100, 181, 246, 0.2); color: #64b5f6; font-weight: bold; }
         
@@ -146,6 +163,10 @@
         .page-input { width: 60px; padding: 5px; background-color: rgba(255, 255, 255, 0.1); border: 1px solid #ff9800; color: white; border-radius: 4px; text-align: center; font-weight: bold; font-family: 'Roboto Slab', serif; }
         .page-btn { background-color: rgba(30, 30, 30, 0.8); border: 1px solid #64b5f6; color: white; padding: 5px 15px; border-radius: 5px; cursor: pointer; transition: 0.2s; font-weight: bold; }
 
+        /* JAUGE DE CARBURANT */
+        .progress-bar-bg { background-color: rgba(0,0,0,0.6); border-radius: 6px; width: 100%; height: 22px; overflow: hidden; border: 1px solid #444; position: relative; box-shadow: inset 0 2px 4px rgba(0,0,0,0.8); }
+        .progress-bar-text { position: absolute; width: 100%; text-align: center; line-height: 22px; font-size: 0.85em; font-weight: bold; color: white; top: 0; left: 0; text-shadow: 1px 1px 2px #000; }
+
         /* CV NOTES */
         .btn-icon-round { background-color: #1976d2; color: white; border: none; border-radius: 50%; width: 35px; height: 35px; cursor: pointer; font-size: 1.1em; transition: 0.2s; display: flex; align-items: center; justify-content: center; margin: 0 auto; }
         .btn-icon-round.has-notes { background-color: #ff9800; color: #1a1a1a; }
@@ -153,8 +174,11 @@
         .cand-accepted { background-color: rgba(76, 175, 80, 0.15) !important; border-left: 5px solid #4caf50; }
         .cand-rejected { background-color: rgba(211, 47, 47, 0.15) !important; border-left: 5px solid #d32f2f; }
 
+        /* MANAGER FORMS */
+        .manager-form { background-color: rgba(30, 30, 30, 0.8); border: 1px dashed #fff; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: flex; gap: 10px; align-items: center; justify-content: space-between; }
+
         /* Hide screens */
-        #step2-login-screen, #main-app, #history-ent-screen, #logs-screen, #candidatures-screen { display: none; }
+        #step2-login-screen, #main-app, #history-ent-screen, #stations-screen, #stocks-screen, #logs-screen, #candidatures-screen { display: none; }
         
     </style>
 </head>
@@ -166,8 +190,8 @@
         </div>
         
         <div id="top-user-badge" class="top-right-user">
-            <div style="color: #e0e0e0; margin-bottom: 2px;">👤 Session : <span id="top-user-name" style="color:#ff9800; font-weight:bold;"></span></div>
-            <div style="color: #e0e0e0;">🏅 Grade : <span id="top-user-grade" style="color:#ff9800; font-weight:bold;"></span></div>
+            <div style="color: #e0e0e0; margin-bottom: 2px;">👤 Session : <span id="top-user-name"></span></div>
+            <div style="color: #e0e0e0;">🏅 Grade : <span id="top-user-grade"></span></div>
         </div>
 
         <!-- Login Employé Pt 1 -->
@@ -202,9 +226,11 @@
             <div class="navbar">
                 <button class="nav-btn active" id="btn-history" onclick="switchTab('history-screen')">📋 Suivi Civils</button>
                 <button class="nav-btn" id="btn-history-ent" onclick="switchTab('history-ent-screen')">🏢 Suivi Pros</button>
+                <button class="nav-btn" id="btn-stations" onclick="switchTab('stations-screen')">⛽ Stations</button>
+                <button class="nav-btn" id="btn-stocks" onclick="switchTab('stocks-screen')">📦 Stocks</button>
                 <button class="nav-btn" id="btn-candidatures" style="display:none;" onclick="switchTab('candidatures-screen')">📄 Candidatures</button>
                 <button class="nav-btn" id="btn-logs" style="display:none;" onclick="switchTab('logs-screen')">📊 Logs</button>
-                <button class="nav-btn" style="background-color: #d32f2f; border: 1px solid #b71c1c;" onclick="location.reload()">❌ Déconnextion</button>
+                <button class="nav-btn" style="background-color: #d32f2f; border: 1px solid #b71c1c;" onclick="logout()">❌ Déconnexion</button>
             </div>
 
             <!-- Suivi Civils -->
@@ -263,6 +289,59 @@
                 </div>
             </div>
 
+            <!-- SUIVI STATIONS ESSENCE -->
+            <div id="stations-screen">
+                <h1 style="color: #ff5722; font-size: 2.2em; margin-bottom: 0;">Stations-Services ⛽</h1>
+                <p style="font-size: 0.9em; color: #aaa; margin-top: 5px;">Suivi et remplissage des cuves de carburant des stations LTD.</p>
+
+                <!-- Formulaire ajout Station (Manager uniquement) -->
+                <div id="manager-add-station" class="manager-form" style="border-color: #ff5722;">
+                    <strong style="color:#ff5722;">Outil Direction : Nouvelle Station</strong>
+                    <input type="text" id="new-station-name" class="info-input" placeholder="Nom (Ex: LTD Paleto)" style="width: 30%; margin:0; border-color:#ff5722;">
+                    <input type="number" id="new-station-cap" class="info-input" placeholder="Capacité Cuve (Ex: 10000)" style="width: 25%; margin:0; border-color:#ff5722;">
+                    <button class="btn btn-small" style="background:#ff5722; color:white; border:none; width: 20%;" onclick="createStation()">+ Créer la station</button>
+                </div>
+
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th style="width:25%;">Localisation Station</th>
+                            <th style="width:45%;">Niveau de Cuve</th>
+                            <th style="width:30%; text-align:center;">Action Ravitailleur</th>
+                        </tr>
+                    </thead>
+                    <tbody id="stations-body"></tbody>
+                </table>
+            </div>
+
+            <!-- SUIVI STOCKS INVENTAIRE -->
+            <div id="stocks-screen">
+                <h1 style="color: #8d6e63; font-size: 2.2em; margin-bottom: 0;">Gestion des Stocks 📦</h1>
+                <p style="font-size: 0.9em; color: #aaa; margin-top: 5px;">Inventaire de la réserve de la supérette.</p>
+
+                <!-- Formulaire ajout Produit (Manager uniquement) -->
+                <div id="manager-add-stock" class="manager-form" style="border-color: #8d6e63;">
+                    <strong style="color:#8d6e63;">Outil Direction : Nouveau Produit</strong>
+                    <input type="text" id="new-stock-name" class="info-input" placeholder="Nom du produit (Ex: Eau)" style="width: 40%; margin:0; border-color:#8d6e63;">
+                    <input type="number" id="new-stock-qty" class="info-input" placeholder="Quantité de départ" style="width: 20%; margin:0; border-color:#8d6e63;">
+                    <button class="btn btn-small" style="background:#8d6e63; color:white; border:none; width: 20%;" onclick="createStock()">+ Ajouter produit</button>
+                </div>
+
+                <input type="text" id="search-stocks" class="info-input" placeholder="🔍 Filtrer les produits..." onkeyup="filterStocks()" style="border-color: #8d6e63; margin-top: 10px;">
+
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th style="width:30%;">Produit</th>
+                            <th style="width:20%; text-align:center;">Quantité en rayon</th>
+                            <th style="width:25%;">Statut</th>
+                            <th style="width:25%; text-align:center;">Mettre à jour</th>
+                        </tr>
+                    </thead>
+                    <tbody id="stocks-body"></tbody>
+                </table>
+            </div>
+
             <!-- Candidatures -->
             <div id="candidatures-screen">
                 <h1 style="color: #1976d2; font-size: 2.2em; margin-bottom: 0;">Candidatures</h1>
@@ -308,9 +387,9 @@
                 </table>
                 
                 <div class="pagination-container" style="width: 70%; margin: 15px auto;">
-                    <button class="page-btn" onclick="changeLogPage(-1)">⬅️</button>
-                    <span>Page <input type="number" id="log-page-input" class="page-input" value="1" onchange="goToLogPage()"> / <span id="log-total-pages">1</span></span>
-                    <button class="page-btn" onclick="changeLogPage(1)">➡️</button>
+                    <button class="page-btn" style="border-color: #64b5f6;" onclick="changeLogPage(-1)">⬅️</button>
+                    <span>Page <input type="number" id="log-page-input" class="page-input" style="border-color: #64b5f6;" value="1" onchange="goToLogPage()"> / <span id="log-total-pages">1</span></span>
+                    <button class="page-btn" style="border-color: #64b5f6;" onclick="changeLogPage(1)">➡️</button>
                 </div>
             </div>
             
@@ -351,25 +430,39 @@
         let currentSessionName = ""; 
         let currentSessionGrade = ""; 
 
-        let ordersHistory = []; 
-        let filteredOrders = [];
-        let ordersEntHistory = [];
-        let filteredEntOrders = [];
-        let candidaturesHistory = [];
-        let filteredCandidatures = [];
-        let logsHistory = [];
-        let filteredLogs = [];
+        let ordersHistory = []; let filteredOrders = [];
+        let ordersEntHistory = []; let filteredEntOrders = [];
+        let candidaturesHistory = []; let filteredCandidatures = [];
+        let logsHistory = []; let filteredLogs = [];
+        
+        let stationsHistory = [];
+        let stocksHistory = []; let filteredStocks = [];
 
-        let currentOrderPage = 1;
-        let currentEntOrderPage = 1;
-        let currentCandPage = 1;
-        let currentLogPage = 1;
+        let currentOrderPage = 1; let currentEntOrderPage = 1;
+        let currentCandPage = 1; let currentLogPage = 1;
         const perPage = 10;
+        
+        // --- GESTION DE SESSION AUTOMATIQUE ---
+        window.onload = () => {
+            const sessionStr = localStorage.getItem('ltd_paleto_session');
+            if(sessionStr) {
+                const sessionData = JSON.parse(sessionStr);
+                if(Date.now() < sessionData.expiry) {
+                    finalizeLogin(sessionData.accountId, sessionData.grade, sessionData.displayFullName, true);
+                } else {
+                    localStorage.removeItem('ltd_paleto_session');
+                }
+            }
+        };
+
+        function logout() {
+            localStorage.removeItem('ltd_paleto_session');
+            location.reload();
+        }
 
         function checkLogin() {
             const u = document.getElementById("username").value;
             const p = document.getElementById("password").value;
-            
             const foundUser = authorizedUsers.find(user => user.name === u && user.pass === p);
             
             if(foundUser) {
@@ -391,7 +484,7 @@
                         gradeSelect.innerHTML += `<option value="Responsable Epicier">Responsable Epicier</option>`;
                     }
                 } else { 
-                    finalizeLogin(foundUser.name, foundUser.grade, foundUser.name); 
+                    finalizeLogin(foundUser.name, foundUser.grade, foundUser.name, false); 
                 }
             } else { 
                 document.getElementById("error").style.display = "block"; 
@@ -402,8 +495,6 @@
             document.getElementById("step2-login-screen").style.display = "none";
             document.getElementById("login-screen").style.display = "block";
             document.getElementById("error-step2").style.display = "none";
-            
-            // On vide les champs du formulaire étape 2 par sécurité
             document.getElementById("step2-firstname").value = "";
             document.getElementById("step2-lastname").value = "";
             pendingUser = null;
@@ -423,36 +514,36 @@
             
             if (isValid) {
                 const fullName = isValid.fname + " " + isValid.lname;
-                finalizeLogin(pendingUser.name, gradeSelect, fullName);
+                finalizeLogin(pendingUser.name, gradeSelect, fullName, false);
             } else {
                 document.getElementById("error-step2").style.display = "block";
             }
         }
 
-        function finalizeLogin(accountId, grade, displayFullName) {
+        function finalizeLogin(accountId, grade, displayFullName, isRestore = false) {
             currentAccountId = accountId; 
             currentSessionName = displayFullName; 
             currentSessionGrade = grade;
             
-            if (accountId !== "admin") {
-                db.ref('logs').push({ 
-                    employe: displayFullName, 
-                    grade: grade, 
-                    date: new Date().toLocaleString('fr-FR'), 
-                    timestamp: firebase.database.ServerValue.TIMESTAMP 
-                });
+            if (!isRestore) {
+                if (accountId !== "admin") {
+                    db.ref('logs').push({ employe: displayFullName, grade: grade, date: new Date().toLocaleString('fr-FR'), timestamp: firebase.database.ServerValue.TIMESTAMP });
+                }
+                const now = new Date();
+                const midnight = new Date(now);
+                midnight.setHours(24, 0, 0, 0); 
+                const sessionData = { accountId: accountId, grade: grade, displayFullName: displayFullName, expiry: midnight.getTime() };
+                localStorage.setItem('ltd_paleto_session', JSON.stringify(sessionData));
             }
             
             document.getElementById("login-screen").style.display = "none";
             document.getElementById("step2-login-screen").style.display = "none";
             document.getElementById("main-app").style.display = "block";
             
-            // Accès aux candidatures : Admin, Direction ET Gestion (RH)
             if (accountId === "admin" || accountId === "Direction Paleto" || accountId === "Gestion Paleto") { 
                 document.getElementById("btn-candidatures").style.display = "block"; 
                 syncCandidatures(); 
             }
-            // Accès aux logs : Admin, Direction, Gestion (RH) ET Responsable
             if (accountId === "admin" || accountId === "Direction Paleto" || accountId === "Gestion Paleto" || accountId === "Responsable") { 
                 document.getElementById("btn-logs").style.display = "block"; 
                 syncLogs(); 
@@ -463,136 +554,256 @@
             document.getElementById("top-user-grade").innerText = grade || "Non défini";
             
             syncDatabase(); 
+            syncStations();
+            syncStocks();
             switchTab('history-screen'); 
         }
 
-        // --- GESTION DES ONGLETS CORRIGÉE ---
         function switchTab(tabId) {
-            // Dictionnaire associant chaque écran à l'ID de son bouton
             const tabs = {
-                'history-screen': 'btn-history',
-                'history-ent-screen': 'btn-history-ent',
-                'candidatures-screen': 'btn-candidatures',
-                'logs-screen': 'btn-logs'
+                'history-screen': { btn: 'btn-history', color: '#4caf50' },
+                'history-ent-screen': { btn: 'btn-history-ent', color: '#ce93d8' },
+                'stations-screen': { btn: 'btn-stations', color: '#ff5722' },
+                'stocks-screen': { btn: 'btn-stocks', color: '#8d6e63' },
+                'candidatures-screen': { btn: 'btn-candidatures', color: '#1976d2' },
+                'logs-screen': { btn: 'btn-logs', color: '#64b5f6' }
             };
 
-            // 1. On cache tous les écrans et on enlève la couleur (classe "active") de tous les boutons
             for (let screenId in tabs) {
                 document.getElementById(screenId).style.display = 'none';
-                let btnId = tabs[screenId];
-                if (document.getElementById(btnId)) {
-                    document.getElementById(btnId).classList.remove('active');
-                }
+                let btnId = tabs[screenId].btn;
+                if (document.getElementById(btnId)) document.getElementById(btnId).classList.remove('active');
             }
 
-            // 2. On affiche l'écran demandé et on colorie (ajoute la classe "active") son bouton
             document.getElementById(tabId).style.display = 'block';
-            let activeBtnId = tabs[tabId];
-            if (activeBtnId && document.getElementById(activeBtnId)) {
-                document.getElementById(activeBtnId).classList.add('active');
+            let activeTab = tabs[tabId];
+            if (activeTab) {
+                if (document.getElementById(activeTab.btn)) document.getElementById(activeTab.btn).classList.add('active');
+                document.documentElement.style.setProperty('--theme-color', activeTab.color);
             }
         }
 
-        // --- DATABASE SYNC ---
+        // --- DATABASE GENERAL SYNC ---
         function syncDatabase() {
             db.ref('orders').orderByChild('timestamp').on('value', (snapshot) => {
-                ordersHistory = []; 
-                ordersEntHistory = [];
-                
+                ordersHistory = []; ordersEntHistory = [];
                 snapshot.forEach((child) => { 
                     const order = { id: child.key, ...child.val() };
-                    if (order.type === "Entreprise") {
-                        ordersEntHistory.unshift(order); 
-                    } else {
-                        ordersHistory.unshift(order);
-                    }
+                    if (order.type === "Entreprise") { ordersEntHistory.unshift(order); } else { ordersHistory.unshift(order); }
                 });
-                filterOrders(); 
-                filterEntOrders();
+                filterOrders(); filterEntOrders();
             });
         }
 
-        function updateField(path, val) { 
-            db.ref(path).set(val); 
-        }
-        function del(path) { 
-            if(confirm("Supprimer définitivement cet élément de la base de données ?")) {
-                db.ref(path).remove(); 
-            }
-        }
+        function updateField(path, val) { db.ref(path).set(val); }
+        function del(path) { if(confirm("Supprimer définitivement cet élément de la base de données ?")) db.ref(path).remove(); }
 
-        // --- RENDER HELPERS ---
         function getEmployeOptions(currentAssignee) {
             let opts = `<option value="">-- Non assigné --</option>`;
-            
             const names = authorizedUsers.filter(u => !u.needsDetails && u.name !== "admin").map(u => u.name);
             validManagementUsers.forEach(u => names.push(u.fname + " " + u.lname));
-            
-            if(!names.includes(currentSessionName) && currentAccountId !== "admin") {
-                names.push(currentSessionName);
-            }
-            if(currentAssignee && !names.includes(currentAssignee) && currentAssignee !== "admin") {
-                names.push(currentAssignee);
-            }
-            
+            if(!names.includes(currentSessionName) && currentAccountId !== "admin") names.push(currentSessionName);
+            if(currentAssignee && !names.includes(currentAssignee) && currentAssignee !== "admin") names.push(currentAssignee);
             const uniqueNames = [...new Set(names)];
-            uniqueNames.forEach(n => {
-                opts += `<option value="${n}" ${currentAssignee === n ? 'selected' : ''}>${n}</option>`;
-            });
-            
+            uniqueNames.forEach(n => { opts += `<option value="${n}" ${currentAssignee === n ? 'selected' : ''}>${n}</option>`; });
             return opts;
         }
 
-        // --- CIVILS ---
+        // --- 1. GESTION DES STATIONS (CUVES) ---
+        function syncStations() {
+            db.ref('stations').on('value', (snapshot) => {
+                stationsHistory = [];
+                snapshot.forEach(child => { stationsHistory.push({ id: child.key, ...child.val() }); });
+                renderStations();
+            });
+        }
+
+        function renderStations() {
+            const tbody = document.getElementById('stations-body');
+            tbody.innerHTML = '';
+            
+            const isManager = (currentSessionGrade !== 'Employé');
+            document.getElementById('manager-add-station').style.display = isManager ? 'flex' : 'none';
+
+            if(stationsHistory.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#aaa;">Aucune station enregistrée.</td></tr>';
+            }
+
+            stationsHistory.forEach(st => {
+                const pctRaw = (st.currentLevel / st.capacity) * 100;
+                const pct = Math.min(pctRaw, 100).toFixed(0);
+                
+                // Passe au rouge si la cuve est à moins de 20%
+                let colorClass = pct < 20 ? 'background: linear-gradient(90deg, #c62828, #f44336);' : 'background: linear-gradient(90deg, #d84315, #ff5722);';
+                
+                let actionHtml = `
+                    <div style="display:flex; gap:10px; justify-content:center; align-items:center;">
+                        <input type="number" id="add-fuel-${st.id}" class="info-input" placeholder="Qté injectée" style="width:110px; padding:8px; margin:0; border-color:#ff5722;">
+                        <button class="btn btn-small" style="background:#ff5722; color:white; border:none; padding:8px 15px;" onclick="addFuel('${st.id}', ${st.currentLevel}, ${st.capacity})">Remplir</button>
+                        ${isManager ? `<button class="btn-action btn-delete" style="padding:6px 10px;" onclick="del('stations/${st.id}')">🗑️</button>` : ''}
+                    </div>
+                `;
+                
+                tbody.innerHTML += `
+                <tr>
+                    <td>
+                        <strong style="color:#ff5722; font-size:1.1em;">${st.name}</strong><br>
+                        <span style="font-size:0.8em; color:#aaa;">Dernier remplissage : ${st.lastUpdate}</span>
+                    </td>
+                    <td>
+                        <div class="progress-bar-bg">
+                            <div style="height:100%; transition:width 0.5s; width:${pct}%; ${colorClass}"></div>
+                            <div class="progress-bar-text">${st.currentLevel} / ${st.capacity} Unités</div>
+                        </div>
+                    </td>
+                    <td style="text-align:center;">${actionHtml}</td>
+                </tr>`;
+            });
+        }
+
+        function createStation() {
+            const name = document.getElementById('new-station-name').value;
+            const cap = parseInt(document.getElementById('new-station-cap').value);
+            if(!name || isNaN(cap) || cap <= 0) return alert('Veuillez entrer un nom et une capacité valide.');
+            
+            db.ref('stations').push({ 
+                name: name, 
+                capacity: cap, 
+                currentLevel: 0, 
+                lastUpdate: new Date().toLocaleString('fr-FR') + ' (Création)' 
+            });
+            document.getElementById('new-station-name').value = '';
+            document.getElementById('new-station-cap').value = '';
+        }
+
+        function addFuel(id, current, capacity) {
+            const addAmount = parseInt(document.getElementById(`add-fuel-${id}`).value);
+            if(isNaN(addAmount) || addAmount <= 0) return alert("Veuillez saisir une quantité valide supérieure à 0.");
+            
+            let newLevel = current + addAmount;
+            if(newLevel > capacity) newLevel = capacity; // Empêche de dépasser la capacité max
+            
+            db.ref('stations/' + id).update({ 
+                currentLevel: newLevel, 
+                lastUpdate: new Date().toLocaleString('fr-FR') + ' par ' + currentSessionName 
+            });
+        }
+
+
+        // --- 2. GESTION DES STOCKS ---
+        function syncStocks() {
+            db.ref('stocks').on('value', (snapshot) => {
+                stocksHistory = [];
+                snapshot.forEach(child => { stocksHistory.push({ id: child.key, ...child.val() }); });
+                filterStocks();
+            });
+        }
+
+        function filterStocks() {
+            const query = document.getElementById('search-stocks').value.toLowerCase();
+            filteredStocks = stocksHistory.filter(s => {
+                return s.name.toLowerCase().includes(query);
+            });
+            renderStocks();
+        }
+
+        function renderStocks() {
+            const tbody = document.getElementById('stocks-body');
+            tbody.innerHTML = '';
+            
+            const isManager = (currentSessionGrade !== 'Employé');
+            document.getElementById('manager-add-stock').style.display = isManager ? 'flex' : 'none';
+
+            if(filteredStocks.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#aaa;">Aucun produit dans l\'inventaire.</td></tr>';
+            }
+
+            filteredStocks.forEach(st => {
+                let statusHtml = st.quantite > 0 
+                    ? `<span style="color:#4caf50; font-weight:bold;">En stock</span>` 
+                    : `<span style="color:#f44336; font-weight:bold;">⚠️ Rupture de stock</span>`;
+                    
+                let actionHtml = `
+                    <div style="display:flex; gap:5px; justify-content:center; align-items:center;">
+                        <input type="number" id="update-stock-${st.id}" class="info-input" placeholder="Qté" style="width:80px; padding:6px; margin:0; border-color:#8d6e63;">
+                        <button class="btn btn-small" style="background:#4caf50; color:white; border:none; font-size:1.2em;" onclick="updateStock('${st.id}', ${st.quantite}, 'add')" title="Ajouter au stock">➕</button>
+                        <button class="btn btn-small" style="background:#f44336; color:white; border:none; font-size:1.2em;" onclick="updateStock('${st.id}', ${st.quantite}, 'sub')" title="Retirer du stock">➖</button>
+                        ${isManager ? `<button class="btn-action btn-delete" style="margin-left:10px;" onclick="del('stocks/${st.id}')">🗑️</button>` : ''}
+                    </div>
+                `;
+                
+                tbody.innerHTML += `
+                <tr>
+                    <td><strong style="color:#8d6e63; font-size:1.1em;">${st.name}</strong></td>
+                    <td style="text-align:center; font-size:1.3em; font-weight:bold; color:${st.quantite > 0 ? '#fff' : '#f44336'};">${st.quantite}</td>
+                    <td>
+                        ${statusHtml}<br>
+                        <span style="font-size:0.8em; color:#aaa;">MAJ: ${st.lastUpdate}</span>
+                    </td>
+                    <td style="text-align:center;">${actionHtml}</td>
+                </tr>`;
+            });
+        }
+
+        function createStock() {
+            const name = document.getElementById('new-stock-name').value;
+            const qty = parseInt(document.getElementById('new-stock-qty').value) || 0;
+            if(!name) return alert('Veuillez indiquer le nom du produit.');
+            
+            db.ref('stocks').push({ 
+                name: name, 
+                quantite: qty, 
+                lastUpdate: new Date().toLocaleString('fr-FR') + ' (Création)' 
+            });
+            document.getElementById('new-stock-name').value = '';
+            document.getElementById('new-stock-qty').value = '';
+        }
+
+        function updateStock(id, currentQty, mode) {
+            const amount = parseInt(document.getElementById(`update-stock-${id}`).value);
+            if(isNaN(amount) || amount <= 0) return alert("Veuillez saisir une quantité valide.");
+            
+            let newQty = currentQty;
+            if(mode === 'add') newQty += amount;
+            if(mode === 'sub') newQty -= amount;
+            
+            if(newQty < 0) newQty = 0; // Le stock ne peut pas être négatif
+            
+            db.ref('stocks/' + id).update({ 
+                quantite: newQty, 
+                lastUpdate: new Date().toLocaleString('fr-FR') + ' par ' + currentSessionName 
+            });
+        }
+
+
+        // --- COMMANDES CIVILS ---
         function filterOrders() {
             const query = document.getElementById('search-orders').value.toLowerCase();
             filteredOrders = ordersHistory.filter(o => {
                 const str = `${o.client} ${o.phone} ${o.articles} ${o.zone} ${o.status} ${o.enCharge}`.toLowerCase();
                 return str.includes(query);
             });
-            currentOrderPage = 1; 
-            renderHistory();
+            currentOrderPage = 1; renderHistory();
         }
 
-        function changeOrderPage(delta) { 
-            currentOrderPage += delta; 
-            renderHistory(); 
-        }
-
-        function goToOrderPage() { 
-            currentOrderPage = parseInt(document.getElementById('order-page-input').value) || 1; 
-            renderHistory(); 
-        }
+        function changeOrderPage(delta) { currentOrderPage += delta; renderHistory(); }
+        function goToOrderPage() { currentOrderPage = parseInt(document.getElementById('order-page-input').value) || 1; renderHistory(); }
 
         function renderHistory() {
-            const tbody = document.getElementById('history-body'); 
-            tbody.innerHTML = '';
-            
+            const tbody = document.getElementById('history-body'); tbody.innerHTML = '';
             const totalPages = Math.max(1, Math.ceil(filteredOrders.length / perPage));
-            if(currentOrderPage < 1) currentOrderPage = 1; 
-            if(currentOrderPage > totalPages) currentOrderPage = totalPages;
+            if(currentOrderPage < 1) currentOrderPage = 1; if(currentOrderPage > totalPages) currentOrderPage = totalPages;
+            document.getElementById('order-total-pages').innerText = totalPages; document.getElementById('order-page-input').value = currentOrderPage;
             
-            document.getElementById('order-total-pages').innerText = totalPages; 
-            document.getElementById('order-page-input').value = currentOrderPage;
-            
-            const startIndex = (currentOrderPage - 1) * perPage;
-            const endIndex = startIndex + perPage;
+            const startIndex = (currentOrderPage - 1) * perPage; const endIndex = startIndex + perPage;
             
             filteredOrders.slice(startIndex, endIndex).forEach(order => {
                 const statOpts = ["En attente de préparation", "Disponible à la livraison", "Livraison en cours", "Livré"].map(s => `<option value="${s}" ${order.status===s?'selected':''}>${s}</option>`).join('');
-                
                 tbody.innerHTML += `
                 <tr>
                     <td style="color:#aaa;">${order.dateCreation}</td>
-                    <td>
-                        <strong style="color:#fff;">${order.client}</strong><br>
-                        <span style="color:#ff9800; font-size:0.9em;">📞 ${order.phone}</span>
-                    </td>
-                    <td style="text-align:left; line-height:1.4;">
-                        <span style="color:#81c784;">🛒 <strong>Panier :</strong></span> ${order.articles}<br>
-                        <span style="color:#64b5f6;">📍 <strong>Livraison :</strong></span> ${order.zone} <i>(${order.dateLivraison})</i><br>
-                        <span style="color:#e57373;">📝 <strong>Notes :</strong></span> ${order.infos}
-                    </td>
+                    <td><strong style="color:#fff;">${order.client}</strong><br><span style="color:#ff9800; font-size:0.9em;">📞 ${order.phone}</span></td>
+                    <td style="text-align:left; line-height:1.4;"><span style="color:#81c784;">🛒 <strong>Panier :</strong></span> ${order.articles}<br><span style="color:#64b5f6;">📍 <strong>Livraison :</strong></span> ${order.zone} <i>(${order.dateLivraison})</i><br><span style="color:#e57373;">📝 <strong>Notes :</strong></span> ${order.infos}</td>
                     <td style="color:#4caf50; font-weight:bold;">${order.total} $</td>
                     <td><select class="status-select charge-select" onchange="updateField('orders/${order.id}/enCharge', this.value)">${getEmployeOptions(order.enCharge)}</select></td>
                     <td><select class="status-select" onchange="updateField('orders/${order.id}/status', this.value)">${statOpts}</select></td>
@@ -601,64 +812,37 @@
             });
         }
 
-        // --- PROS ---
+        // --- COMMANDES PROS ---
         function filterEntOrders() {
             const query = document.getElementById('search-ent-orders').value.toLowerCase();
             filteredEntOrders = ordersEntHistory.filter(o => {
                 const str = `${o.client} ${o.phone} ${o.articles} ${o.status} ${o.enCharge}`.toLowerCase();
                 return str.includes(query);
             });
-            currentEntOrderPage = 1; 
-            renderEntHistory();
+            currentEntOrderPage = 1; renderEntHistory();
         }
 
-        function changeEntOrderPage(delta) { 
-            currentEntOrderPage += delta; 
-            renderEntHistory(); 
-        }
-
-        function goToEntOrderPage() { 
-            currentEntOrderPage = parseInt(document.getElementById('order-ent-page-input').value) || 1; 
-            renderEntHistory(); 
-        }
+        function changeEntOrderPage(delta) { currentEntOrderPage += delta; renderEntHistory(); }
+        function goToEntOrderPage() { currentEntOrderPage = parseInt(document.getElementById('order-ent-page-input').value) || 1; renderEntHistory(); }
 
         function renderEntHistory() {
-            const tbody = document.getElementById('history-ent-body'); 
-            tbody.innerHTML = '';
-            
+            const tbody = document.getElementById('history-ent-body'); tbody.innerHTML = '';
             const totalPages = Math.max(1, Math.ceil(filteredEntOrders.length / perPage));
-            if(currentEntOrderPage < 1) currentEntOrderPage = 1; 
-            if(currentEntOrderPage > totalPages) currentEntOrderPage = totalPages;
+            if(currentEntOrderPage < 1) currentEntOrderPage = 1; if(currentEntOrderPage > totalPages) currentEntOrderPage = totalPages;
+            document.getElementById('order-ent-total-pages').innerText = totalPages; document.getElementById('order-ent-page-input').value = currentEntOrderPage;
             
-            document.getElementById('order-ent-total-pages').innerText = totalPages; 
-            document.getElementById('order-ent-page-input').value = currentEntOrderPage;
-            
-            const startIndex = (currentEntOrderPage - 1) * perPage;
-            const endIndex = startIndex + perPage;
+            const startIndex = (currentEntOrderPage - 1) * perPage; const endIndex = startIndex + perPage;
             
             filteredEntOrders.slice(startIndex, endIndex).forEach(order => {
                 const statOpts = ["En attente de préparation", "Disponible à la livraison", "Livraison en cours", "Livré"].map(s => `<option value="${s}" ${order.status===s?'selected':''}>${s}</option>`).join('');
-                
-                let entName = order.client;
-                let contact = ""; 
-                if(order.client.includes("(")) { 
-                    entName = order.client.split(' (')[0]; 
-                    contact = order.client.split('(')[1].replace(')',''); 
-                }
+                let entName = order.client; let contact = ""; 
+                if(order.client.includes("(")) { entName = order.client.split(' (')[0]; contact = order.client.split('(')[1].replace(')',''); }
                 
                 tbody.innerHTML += `
                 <tr>
                     <td style="color:#aaa;">${order.dateCreation}</td>
-                    <td>
-                        <strong style="color:#ce93d8;">${entName}</strong><br>
-                        <span style="color:#aaa; font-size:0.8em;">👤 ${contact}</span><br>
-                        <span style="color:#ff9800; font-size:0.8em;">📞 ${order.phone}</span>
-                    </td>
-                    <td style="text-align:left; line-height:1.4;">
-                        <span style="color:#81c784;">🛒 <strong>Panier :</strong></span> ${order.articles}<br>
-                        <span style="color:#64b5f6;">🗓️ <strong>Date prévue :</strong></span> ${order.dateLivraison}<br>
-                        <span style="color:#e57373;">📝 <strong>Notes :</strong></span> ${order.infos}
-                    </td>
+                    <td><strong style="color:#ce93d8;">${entName}</strong><br><span style="color:#aaa; font-size:0.8em;">👤 ${contact}</span><br><span style="color:#ff9800; font-size:0.8em;">📞 ${order.phone}</span></td>
+                    <td style="text-align:left; line-height:1.4;"><span style="color:#81c784;">🛒 <strong>Panier :</strong></span> ${order.articles}<br><span style="color:#64b5f6;">🗓️ <strong>Date prévue :</strong></span> ${order.dateLivraison}<br><span style="color:#e57373;">📝 <strong>Notes :</strong></span> ${order.infos}</td>
                     <td style="color:#ab47bc; font-weight:bold;">${order.total} $</td>
                     <td><select class="status-select charge-select" style="border-color:#ce93d8;" onchange="updateField('orders/${order.id}/enCharge', this.value)">${getEmployeOptions(order.enCharge)}</select></td>
                     <td><select class="status-select" style="border-color:#ce93d8;" onchange="updateField('orders/${order.id}/status', this.value)">${statOpts}</select></td>
@@ -671,64 +855,34 @@
         function syncCandidatures() {
             db.ref('candidatures').orderByChild('timestamp').on('value', (snapshot) => { 
                 candidaturesHistory = []; 
-                snapshot.forEach(c => {
-                    candidaturesHistory.unshift({ id: c.key, ...c.val() });
-                }); 
-                filterCandidatures(); 
+                snapshot.forEach(c => { candidaturesHistory.unshift({ id: c.key, ...c.val() }); }); filterCandidatures(); 
             });
         }
 
         function filterCandidatures() { 
             const query = document.getElementById('search-cands').value.toLowerCase(); 
-            filteredCandidatures = candidaturesHistory.filter(c => {
-                const str = `${c.prenom} ${c.nom} ${c.experience} ${c.status}`.toLowerCase();
-                return str.includes(query);
-            }); 
-            currentCandPage = 1; 
-            renderCandidatures(); 
+            filteredCandidatures = candidaturesHistory.filter(c => { return `${c.prenom} ${c.nom} ${c.experience} ${c.status}`.toLowerCase().includes(query); }); 
+            currentCandPage = 1; renderCandidatures(); 
         }
 
-        function changeCandPage(delta) { 
-            currentCandPage += delta; 
-            renderCandidatures(); 
-        }
-
-        function goToCandPage() { 
-            currentCandPage = parseInt(document.getElementById('cand-page-input').value) || 1; 
-            renderCandidatures(); 
-        }
+        function changeCandPage(delta) { currentCandPage += delta; renderCandidatures(); }
+        function goToCandPage() { currentCandPage = parseInt(document.getElementById('cand-page-input').value) || 1; renderCandidatures(); }
 
         function renderCandidatures() {
-            const tbody = document.getElementById('candidatures-body'); 
-            tbody.innerHTML = '';
-            
+            const tbody = document.getElementById('candidatures-body'); tbody.innerHTML = '';
             const totalPages = Math.max(1, Math.ceil(filteredCandidatures.length / perPage));
-            if(currentCandPage < 1) currentCandPage = 1; 
-            if(currentCandPage > totalPages) currentCandPage = totalPages;
+            if(currentCandPage < 1) currentCandPage = 1; if(currentCandPage > totalPages) currentCandPage = totalPages;
+            document.getElementById('cand-total-pages').innerText = totalPages; document.getElementById('cand-page-input').value = currentCandPage;
             
-            document.getElementById('cand-total-pages').innerText = totalPages; 
-            document.getElementById('cand-page-input').value = currentCandPage;
-            
-            const startIndex = (currentCandPage - 1) * perPage;
-            const endIndex = startIndex + perPage;
-            
+            const startIndex = (currentCandPage - 1) * perPage; const endIndex = startIndex + perPage;
             filteredCandidatures.slice(startIndex, endIndex).forEach(cand => {
-                let rowClass = ""; 
-                if(cand.status === "accepté") { rowClass="cand-accepted"; }
-                else if(cand.status === "refusé") { rowClass="cand-rejected"; }
-                
+                let rowClass = ""; if(cand.status === "accepté") { rowClass="cand-accepted"; } else if(cand.status === "refusé") { rowClass="cand-rejected"; }
                 tbody.innerHTML += `
                 <tr class="${rowClass}">
                     <td style="color:#aaa;">${cand.dateCreation}</td>
                     <td><strong style="color:#fff; font-size:1.1em;">${cand.prenom} ${cand.nom}</strong></td>
-                    <td>
-                        🎂 ${cand.age} ans<br>
-                        <span style="color:#ff9800;">📞 ${cand.phone}</span>
-                    </td>
-                    <td style="text-align:left; line-height:1.4;">
-                        <span style="color:#ddd;"><i>Exp:</i> "${cand.experience}"</span><br><br>
-                        <span style="color:#b3e5fc;"><i>Mot:</i> "${cand.motivation}"</span>
-                    </td>
+                    <td>🎂 ${cand.age} ans<br><span style="color:#ff9800;">📞 ${cand.phone}</span></td>
+                    <td style="text-align:left; line-height:1.4;"><span style="color:#ddd;"><i>Exp:</i> "${cand.experience}"</span><br><br><span style="color:#b3e5fc;"><i>Mot:</i> "${cand.motivation}"</span></td>
                     <td style="text-align:center; vertical-align:middle;">
                         <button class="btn-icon-round ${cand.appreciation ? 'has-notes' : ''}" onclick="document.getElementById('app-${cand.id}').style.display = document.getElementById('app-${cand.id}').style.display === 'none' ? 'block' : 'none'">
                             ${cand.appreciation ? '📝' : '➕'}
@@ -750,60 +904,31 @@
         // --- LOGS ---
         function syncLogs() { 
             db.ref('logs').orderByChild('timestamp').on('value', (snapshot) => { 
-                logsHistory = []; 
-                snapshot.forEach(log => {
-                    logsHistory.unshift({ id: log.key, ...log.val() });
-                }); 
-                filterLogs(); 
+                logsHistory = []; snapshot.forEach(log => { logsHistory.unshift({ id: log.key, ...log.val() }); }); filterLogs(); 
             }); 
         }
 
         function filterLogs() { 
             const query = document.getElementById('search-logs').value.toLowerCase(); 
-            filteredLogs = logsHistory.filter(l => {
-                const str = `${l.employe} ${l.date} ${l.grade}`.toLowerCase();
-                return str.includes(query);
-            }); 
-            currentLogPage = 1; 
-            renderLogs(); 
+            filteredLogs = logsHistory.filter(l => { return `${l.employe} ${l.date} ${l.grade}`.toLowerCase().includes(query); }); 
+            currentLogPage = 1; renderLogs(); 
         }
 
-        function changeLogPage(delta) { 
-            currentLogPage += delta; 
-            renderLogs(); 
-        }
-
-        function goToLogPage() { 
-            currentLogPage = parseInt(document.getElementById('log-page-input').value) || 1; 
-            renderLogs(); 
-        }
+        function changeLogPage(delta) { currentLogPage += delta; renderLogs(); }
+        function goToLogPage() { currentLogPage = parseInt(document.getElementById('log-page-input').value) || 1; renderLogs(); }
 
         function renderLogs() {
-            const tbody = document.getElementById('logs-body'); 
-            tbody.innerHTML = '';
-            
+            const tbody = document.getElementById('logs-body'); tbody.innerHTML = '';
             const totalPages = Math.max(1, Math.ceil(filteredLogs.length / perPage));
-            if(currentLogPage < 1) currentLogPage = 1; 
-            if(currentLogPage > totalPages) currentLogPage = totalPages;
-            
-            document.getElementById('log-total-pages').innerText = totalPages; 
-            document.getElementById('log-page-input').value = currentLogPage;
-            
+            if(currentLogPage < 1) currentLogPage = 1; if(currentLogPage > totalPages) currentLogPage = totalPages;
+            document.getElementById('log-total-pages').innerText = totalPages; document.getElementById('log-page-input').value = currentLogPage;
             document.getElementById('th-log-action').style.display = currentAccountId === 'admin' ? 'table-cell' : 'none';
             
-            const startIndex = (currentLogPage - 1) * perPage;
-            const endIndex = startIndex + perPage;
-            
+            const startIndex = (currentLogPage - 1) * perPage; const endIndex = startIndex + perPage;
             filteredLogs.slice(startIndex, endIndex).forEach(log => {
                 let actionTd = currentAccountId === "admin" ? `<td style="text-align:center;"><button class="btn-action btn-delete" onclick="del('logs/${log.id}')">🗑️</button></td>` : '';
                 const gradeBadge = log.grade ? ` <span style="color:#ff9800; font-size:0.85em;">(${log.grade})</span>` : '';
-                
-                tbody.innerHTML += `
-                <tr>
-                    <td style="color:#aaa;">${log.date}</td>
-                    <td><strong style="color:#64b5f6;">${log.employe}</strong>${gradeBadge}</td>
-                    ${actionTd}
-                </tr>`;
+                tbody.innerHTML += `<tr><td style="color:#aaa;">${log.date}</td><td><strong style="color:#64b5f6;">${log.employe}</strong>${gradeBadge}</td>${actionTd}</tr>`;
             });
         }
 
