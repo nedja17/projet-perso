@@ -388,7 +388,7 @@
                 <div class="pagination-container" style="width: 70%; margin: 15px auto;">
                     <button class="page-btn" style="border-color: #64b5f6;" onclick="changeLogPage(-1)">⬅️</button>
                     <span>Page <input type="number" id="log-page-input" class="page-input" style="border-color: #64b5f6;" value="1" onchange="goToLogPage()"> / <span id="log-total-pages">1</span></span>
-                    <button class="page-btn" style="border-color: #64b5f6;" onclick="changeLogPage(1)">➡️️</button>
+                    <button class="page-btn" style="border-color: #64b5f6;" onclick="changeLogPage(1)">➡️</button>
                 </div>
             </div>
             
@@ -448,8 +448,8 @@
         const perPage = 10;
         
         // --- PARAMÈTRES DES QUOTAS ---
-        const QUOTA_OBJECTIF = 1500; // Objectif de bidons par semaine
-        const PRIX_PAR_BIDON = 7;    // Prix payé par bidon (en dollars)
+        const QUOTA_OBJECTIF = 1500; 
+        const PRIX_PAR_BIDON = 7;    
 
         // --- GESTION DE SESSION AUTOMATIQUE ---
         window.onload = () => {
@@ -457,7 +457,6 @@
             if(sessionStr) {
                 const sessionData = JSON.parse(sessionStr);
                 if(Date.now() < sessionData.expiry) {
-                    // La session est valide, on connecte sans écrire de log !
                     finalizeLogin(sessionData.accountId, sessionData.grade, sessionData.displayFullName, true);
                 } else {
                     localStorage.removeItem('ltd_paleto_session');
@@ -537,9 +536,7 @@
             currentSessionName = displayFullName; 
             currentSessionGrade = grade;
             
-            // Si c'est une nouvelle connexion (pas un F5/Refresh)
             if (!isRestore) {
-                // Créer le Log
                 if (accountId !== "admin") {
                     db.ref('logs').push({ 
                         employe: displayFullName, 
@@ -549,10 +546,9 @@
                     });
                 }
                 
-                // Sauvegarder la session jusqu'à minuit
                 const now = new Date();
                 const midnight = new Date(now);
-                midnight.setHours(24, 0, 0, 0); // Prochain minuit pile
+                midnight.setHours(24, 0, 0, 0); 
                 const sessionData = { 
                     accountId: accountId, 
                     grade: grade, 
@@ -566,7 +562,6 @@
             document.getElementById("step2-login-screen").style.display = "none";
             document.getElementById("main-app").style.display = "block";
             
-            // Affichage des onglets Restreints (Candidatures, Logs)
             if (accountId === "admin" || accountId === "Direction Paleto" || accountId === "Gestion Paleto") { 
                 document.getElementById("btn-candidatures").style.display = "block"; 
                 syncCandidatures(); 
@@ -580,7 +575,6 @@
             document.getElementById("top-user-name").innerText = displayFullName;
             document.getElementById("top-user-grade").innerText = grade || "Non défini";
             
-            // Set par défaut la semaine en cours dans l'onglet Quota
             document.getElementById("quota-week").value = getCurrentWeek();
 
             syncDatabase(); 
@@ -701,9 +695,12 @@
 
         function filterQuotas() {
             const query = document.getElementById('search-quotas').value.toLowerCase();
-            const isManager = (currentAccountId === 'admin' || currentAccountId === 'Direction Paleto' || currentAccountId === 'Gestion Paleto' || currentAccountId === 'Responsable');
+            
+            // On vérifie le grade de l'utilisateur. Si c'est "Employé", ce n'est pas un manager.
+            const isManager = (currentSessionGrade !== 'Employé');
             
             filteredQuotas = quotasHistory.filter(q => {
+                // On bloque l'affichage si le compte est un simple employé ET que le quota ne lui appartient pas
                 if (!isManager && q.employe !== currentSessionName) {
                     return false;
                 }
@@ -768,7 +765,7 @@
             document.getElementById('quota-total-pages').innerText = totalPages; 
             document.getElementById('quota-page-input').value = currentQuotaPage;
 
-            const isManager = (currentAccountId === 'admin' || currentAccountId === 'Direction Paleto' || currentAccountId === 'Gestion Paleto' || currentAccountId === 'Responsable');
+            const isManager = (currentSessionGrade !== 'Employé');
             document.getElementById('quota-action-th').style.display = isManager ? 'table-cell' : 'none';
 
             const startIndex = (currentQuotaPage - 1) * perPage;
