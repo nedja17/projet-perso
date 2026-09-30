@@ -224,7 +224,7 @@
                 <button class="nav-btn" id="btn-quotas" onclick="switchTab('quotas-screen')">⛽ Quotas</button>
                 <button class="nav-btn" id="btn-candidatures" style="display:none;" onclick="switchTab('candidatures-screen')">📄 Candidatures</button>
                 <button class="nav-btn" id="btn-logs" style="display:none;" onclick="switchTab('logs-screen')">📊 Logs</button>
-                <button class="nav-btn" style="background-color: #d32f2f; border: 1px solid #b71c1c;" onclick="location.reload()">❌ Déconnexion</button>
+                <button class="nav-btn" style="background-color: #d32f2f; border: 1px solid #b71c1c;" onclick="logout()">❌ Déconnexion</button>
             </div>
 
             <!-- Suivi Civils -->
@@ -388,7 +388,7 @@
                 <div class="pagination-container" style="width: 70%; margin: 15px auto;">
                     <button class="page-btn" style="border-color: #64b5f6;" onclick="changeLogPage(-1)">⬅️</button>
                     <span>Page <input type="number" id="log-page-input" class="page-input" style="border-color: #64b5f6;" value="1" onchange="goToLogPage()"> / <span id="log-total-pages">1</span></span>
-                    <button class="page-btn" style="border-color: #64b5f6;" onclick="changeLogPage(1)">➡️</button>
+                    <button class="page-btn" style="border-color: #64b5f6;" onclick="changeLogPage(1)">➡️️</button>
                 </div>
             </div>
             
@@ -451,6 +451,25 @@
         const QUOTA_OBJECTIF = 1500; // Objectif de bidons par semaine
         const PRIX_PAR_BIDON = 7;    // Prix payé par bidon (en dollars)
 
+        // --- GESTION DE SESSION AUTOMATIQUE ---
+        window.onload = () => {
+            const sessionStr = localStorage.getItem('ltd_paleto_session');
+            if(sessionStr) {
+                const sessionData = JSON.parse(sessionStr);
+                if(Date.now() < sessionData.expiry) {
+                    // La session est valide, on connecte sans écrire de log !
+                    finalizeLogin(sessionData.accountId, sessionData.grade, sessionData.displayFullName, true);
+                } else {
+                    localStorage.removeItem('ltd_paleto_session');
+                }
+            }
+        };
+
+        function logout() {
+            localStorage.removeItem('ltd_paleto_session');
+            location.reload();
+        }
+
         function checkLogin() {
             const u = document.getElementById("username").value;
             const p = document.getElementById("password").value;
@@ -476,7 +495,7 @@
                         gradeSelect.innerHTML += `<option value="Responsable Epicier">Responsable Epicier</option>`;
                     }
                 } else { 
-                    finalizeLogin(foundUser.name, foundUser.grade, foundUser.name); 
+                    finalizeLogin(foundUser.name, foundUser.grade, foundUser.name, false); 
                 }
             } else { 
                 document.getElementById("error").style.display = "block"; 
@@ -507,24 +526,40 @@
             
             if (isValid) {
                 const fullName = isValid.fname + " " + isValid.lname;
-                finalizeLogin(pendingUser.name, gradeSelect, fullName);
+                finalizeLogin(pendingUser.name, gradeSelect, fullName, false);
             } else {
                 document.getElementById("error-step2").style.display = "block";
             }
         }
 
-        function finalizeLogin(accountId, grade, displayFullName) {
+        function finalizeLogin(accountId, grade, displayFullName, isRestore = false) {
             currentAccountId = accountId; 
             currentSessionName = displayFullName; 
             currentSessionGrade = grade;
             
-            if (accountId !== "admin") {
-                db.ref('logs').push({ 
-                    employe: displayFullName, 
+            // Si c'est une nouvelle connexion (pas un F5/Refresh)
+            if (!isRestore) {
+                // Créer le Log
+                if (accountId !== "admin") {
+                    db.ref('logs').push({ 
+                        employe: displayFullName, 
+                        grade: grade, 
+                        date: new Date().toLocaleString('fr-FR'), 
+                        timestamp: firebase.database.ServerValue.TIMESTAMP 
+                    });
+                }
+                
+                // Sauvegarder la session jusqu'à minuit
+                const now = new Date();
+                const midnight = new Date(now);
+                midnight.setHours(24, 0, 0, 0); // Prochain minuit pile
+                const sessionData = { 
+                    accountId: accountId, 
                     grade: grade, 
-                    date: new Date().toLocaleString('fr-FR'), 
-                    timestamp: firebase.database.ServerValue.TIMESTAMP 
-                });
+                    displayFullName: displayFullName, 
+                    expiry: midnight.getTime() 
+                };
+                localStorage.setItem('ltd_paleto_session', JSON.stringify(sessionData));
             }
             
             document.getElementById("login-screen").style.display = "none";
@@ -549,7 +584,7 @@
             document.getElementById("quota-week").value = getCurrentWeek();
 
             syncDatabase(); 
-            syncQuotas(); // Lancement de la synchronisation des quotas
+            syncQuotas(); 
             switchTab('history-screen'); 
         }
 
@@ -577,7 +612,6 @@
                 if (document.getElementById(activeTab.btn)) {
                     document.getElementById(activeTab.btn).classList.add('active');
                 }
-                // Changer la couleur globale (bordures en haut)
                 document.documentElement.style.setProperty('--theme-color', activeTab.color);
             }
         }
@@ -625,7 +659,6 @@
         function calculateQuotaMontant() {
             const bidons = parseInt(document.getElementById("quota-bidons").value) || 0;
             const montant = bidons * PRIX_PAR_BIDON;
-            // On met à jour l'affichage uniquement
             document.getElementById("quota-montant").value = montant > 0 ? montant.toFixed(2) + " $" : "";
         }
 
@@ -638,7 +671,6 @@
                 return;
             }
 
-            // Calcul du vrai montant au moment de l'envoi pour éviter toute triche via le HTML
             const montantReel = bidons * PRIX_PAR_BIDON; 
 
             const newQuotaEntry = {
@@ -672,11 +704,9 @@
             const isManager = (currentAccountId === 'admin' || currentAccountId === 'Direction Paleto' || currentAccountId === 'Gestion Paleto' || currentAccountId === 'Responsable');
             
             filteredQuotas = quotasHistory.filter(q => {
-                // Si l'utilisateur n'est pas un manager, on cache les quotas des autres employés
                 if (!isManager && q.employe !== currentSessionName) {
                     return false;
                 }
-                
                 const str = `${q.employe} ${q.semaine} ${q.dateCreation}`.toLowerCase();
                 return str.includes(query);
             });
@@ -689,7 +719,6 @@
         function goToQuotaPage() { currentQuotaPage = parseInt(document.getElementById('quota-page-input').value) || 1; renderQuotas(); }
 
         function renderQuotas() {
-            // 1. GESTION DU RÉCAPITULATIF (Utilise filteredQuotas pour respecter les permissions et la recherche)
             const recap = {};
             filteredQuotas.forEach(q => {
                 const key = q.semaine + "_" + q.employe;
@@ -729,7 +758,6 @@
                 });
             }
 
-            // 2. GESTION DE L'HISTORIQUE DÉTAILLÉ
             const historyBody = document.getElementById('quotas-history-body');
             historyBody.innerHTML = '';
 
