@@ -293,8 +293,8 @@
                     <h3 style="color: #00acc1; border-bottom: 2px solid #00acc1; margin-top: 0; padding-bottom: 10px; text-align: left;">SAISIR UN RAVITAILLEMENT</h3>
                     <div style="display: flex; gap: 10px; justify-content: space-between; flex-wrap: wrap;">
                         <input type="week" id="quota-week" class="info-input" style="width: 30%; border-color: #00acc1; margin-bottom: 0;">
-                        <input type="number" id="quota-bidons" class="info-input" placeholder="Nombre de bidons" style="width: 30%; border-color: #00acc1; margin-bottom: 0;">
-                        <input type="number" id="quota-montant" class="info-input" placeholder="Montant généré ($)" style="width: 30%; border-color: #00acc1; margin-bottom: 0;">
+                        <input type="number" id="quota-bidons" class="info-input" placeholder="Nombre de bidons (Ex: 100)" style="width: 30%; border-color: #00acc1; margin-bottom: 0;" oninput="calculateQuotaMontant()">
+                        <input type="text" id="quota-montant" class="info-input" placeholder="Montant auto ($)" style="width: 30%; border-color: #00acc1; margin-bottom: 0; background-color: rgba(0,0,0,0.5); cursor: not-allowed; color: #00acc1; font-weight: bold;" readonly title="Calculé automatiquement (7$ par bidon)">
                     </div>
                     <div style="display: flex; justify-content: flex-end; margin-top: 15px;">
                         <button class="btn" style="width: 30%; background: linear-gradient(45deg, #00acc1, #00838f); color: white;" onclick="submitQuota()">AJOUTER AU QUOTA</button>
@@ -327,7 +327,7 @@
                             <th style="width:15%;">Semaine</th>
                             <th style="width:20%;">Employé</th>
                             <th style="width:15%;">Bidons ajoutés</th>
-                            <th style="width:20%;">Montant déclaré</th>
+                            <th style="width:20%;">Montant généré</th>
                             <th id="quota-action-th" style="width:15%; display:none; text-align:center;">Act</th>
                         </tr>
                     </thead>
@@ -447,8 +447,9 @@
         let currentQuotaPage = 1;
         const perPage = 10;
         
-        // Configuration de l'objectif hebdomadaire (modifiable ici)
-        const QUOTA_OBJECTIF = 1500;
+        // --- PARAMÈTRES DES QUOTAS ---
+        const QUOTA_OBJECTIF = 1500; // Objectif de bidons par semaine
+        const PRIX_PAR_BIDON = 7;    // Prix payé par bidon (en dollars)
 
         function checkLogin() {
             const u = document.getElementById("username").value;
@@ -621,21 +622,30 @@
         }
 
         // --- QUOTAS RAVITAILLEURS ---
+        function calculateQuotaMontant() {
+            const bidons = parseInt(document.getElementById("quota-bidons").value) || 0;
+            const montant = bidons * PRIX_PAR_BIDON;
+            // On met à jour l'affichage uniquement
+            document.getElementById("quota-montant").value = montant > 0 ? montant.toFixed(2) + " $" : "";
+        }
+
         function submitQuota() {
             const week = document.getElementById("quota-week").value;
             const bidons = parseInt(document.getElementById("quota-bidons").value);
-            const montant = parseFloat(document.getElementById("quota-montant").value);
 
-            if(!week || isNaN(bidons) || isNaN(montant) || bidons <= 0) {
-                alert("Veuillez remplir correctement la semaine, le nombre de bidons (minimum 1) et le montant.");
+            if(!week || isNaN(bidons) || bidons <= 0) {
+                alert("Veuillez remplir correctement la semaine et le nombre de bidons (minimum 1).");
                 return;
             }
+
+            // Calcul du vrai montant au moment de l'envoi pour éviter toute triche via le HTML
+            const montantReel = bidons * PRIX_PAR_BIDON; 
 
             const newQuotaEntry = {
                 employe: currentSessionName,
                 semaine: week,
                 bidons: bidons,
-                montant: montant,
+                montant: montantReel,
                 dateCreation: new Date().toLocaleString('fr-FR'),
                 timestamp: firebase.database.ServerValue.TIMESTAMP
             };
@@ -653,7 +663,7 @@
                 snapshot.forEach(child => {
                     quotasHistory.unshift({ id: child.key, ...child.val() });
                 });
-                filterQuotas(); // Appelle le rendu
+                filterQuotas(); 
             });
         }
 
@@ -671,7 +681,7 @@
         function goToQuotaPage() { currentQuotaPage = parseInt(document.getElementById('quota-page-input').value) || 1; renderQuotas(); }
 
         function renderQuotas() {
-            // 1. GESTION DU RÉCAPITULATIF (Groupé par Employé et par Semaine)
+            // 1. GESTION DU RÉCAPITULATIF 
             const recap = {};
             quotasHistory.forEach(q => {
                 const key = q.semaine + "_" + q.employe;
@@ -682,7 +692,7 @@
                 recap[key].montant += parseFloat(q.montant) || 0;
             });
 
-            const recapArray = Object.values(recap).sort((a, b) => b.semaine.localeCompare(a.semaine)); // Tri par semaine descendante
+            const recapArray = Object.values(recap).sort((a, b) => b.semaine.localeCompare(a.semaine)); 
             const recapBody = document.getElementById('quotas-recap-body');
             recapBody.innerHTML = '';
 
@@ -691,7 +701,7 @@
             } else {
                 recapArray.forEach(r => {
                     const percentRaw = (r.bidons / QUOTA_OBJECTIF) * 100;
-                    const percent = Math.min(percentRaw, 100).toFixed(0); // Max 100% visuel
+                    const percent = Math.min(percentRaw, 100).toFixed(0); 
                     const isSuccess = r.bidons >= QUOTA_OBJECTIF;
                     const fillClass = isSuccess ? 'progress-bar-fill success' : 'progress-bar-fill';
                     
@@ -711,7 +721,7 @@
                 });
             }
 
-            // 2. GESTION DE L'HISTORIQUE DÉTAILLÉ (Tableau du bas)
+            // 2. GESTION DE L'HISTORIQUE DÉTAILLÉ 
             const historyBody = document.getElementById('quotas-history-body');
             historyBody.innerHTML = '';
 
