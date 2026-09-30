@@ -11,6 +11,11 @@
 
     <style>
         /* --- DESIGN GLOBAL --- */
+        :root {
+            /* Couleur orange par défaut pour la page de connexion */
+            --theme-color: #ff9800; 
+        }
+
         *, *::before, *::after { box-sizing: border-box; }
 
         body {
@@ -53,9 +58,13 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.3);
             line-height: 1.5;
             color: #e0e0e0;
+            transition: border-color 0.3s ease;
         }
-        .top-left-clock { left: 30px; border: 1px solid #64b5f6; }
-        .top-right-user { right: 30px; border: 1px solid #ff9800; text-align: left; display: none; }
+        .top-left-clock { left: 30px; border: 1px solid var(--theme-color); }
+        .top-left-clock span { color: var(--theme-color); font-weight: bold; transition: color 0.3s ease; }
+        
+        .top-right-user { right: 30px; border: 1px solid var(--theme-color); text-align: left; display: none; }
+        .top-right-user span { color: var(--theme-color); font-weight: bold; transition: color 0.3s ease; }
         
         h1 { color: #ff9800; letter-spacing: 1px; margin-bottom: 15px; font-size: 2.5em; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); }
         
@@ -86,6 +95,9 @@
         
         #btn-history-ent { border: 1px solid #9c27b0; }
         #btn-history-ent:hover, #btn-history-ent.active { background-color: #9c27b0; color: white; }
+        
+        #btn-quotas { border: 1px solid #00acc1; }
+        #btn-quotas:hover, #btn-quotas.active { background-color: #00acc1; color: white; }
         
         #btn-candidatures { border: 1px solid #1976d2; }
         #btn-candidatures:hover, #btn-candidatures.active { background-color: #1976d2; color: white; }
@@ -134,9 +146,10 @@
         .history-table { width: 100%; table-layout: fixed; border-collapse: collapse; margin-top: 10px; text-align: left; background-color: rgba(30, 30, 30, 0.8); border-radius: 8px; overflow: hidden; }
         .history-table th, .history-table td { padding: 15px; border-bottom: 1px solid #444; vertical-align: middle; word-wrap: break-word; font-size: 0.9em;}
         
-        /* THÈMES DES EN-TÊTES DE TABLEAUX (La bande orange/verte/violette) */
+        /* THÈMES DES EN-TÊTES DE TABLEAUX */
         #history-screen .history-table th { background-color: rgba(76, 175, 80, 0.2); color: #4caf50; font-weight: bold; }
         #history-ent-screen .history-table th { background-color: rgba(156, 39, 176, 0.2); color: #ce93d8; font-weight: bold; }
+        #quotas-screen .history-table th { background-color: rgba(0, 172, 193, 0.2); color: #00acc1; font-weight: bold; }
         #candidatures-screen .history-table th { background-color: rgba(25, 118, 210, 0.2); color: #64b5f6; font-weight: bold; }
         #logs-screen .history-table th { background-color: rgba(100, 181, 246, 0.2); color: #64b5f6; font-weight: bold; }
         
@@ -146,6 +159,12 @@
         .page-input { width: 60px; padding: 5px; background-color: rgba(255, 255, 255, 0.1); border: 1px solid #ff9800; color: white; border-radius: 4px; text-align: center; font-weight: bold; font-family: 'Roboto Slab', serif; }
         .page-btn { background-color: rgba(30, 30, 30, 0.8); border: 1px solid #64b5f6; color: white; padding: 5px 15px; border-radius: 5px; cursor: pointer; transition: 0.2s; font-weight: bold; }
 
+        /* PROGRESS BAR QUOTAS */
+        .progress-bar-bg { background-color: #1a1a1a; border-radius: 8px; width: 100%; height: 22px; overflow: hidden; border: 1px solid #555; position: relative; box-shadow: inset 0 2px 4px rgba(0,0,0,0.5); }
+        .progress-bar-fill { background: linear-gradient(90deg, #00838f, #00acc1); height: 100%; transition: width 0.5s ease-in-out; }
+        .progress-bar-fill.success { background: linear-gradient(90deg, #2e7d32, #4caf50); }
+        .progress-bar-text { position: absolute; width: 100%; text-align: center; line-height: 22px; font-size: 0.85em; font-weight: bold; color: white; top: 0; left: 0; text-shadow: 1px 1px 2px #000; }
+
         /* CV NOTES */
         .btn-icon-round { background-color: #1976d2; color: white; border: none; border-radius: 50%; width: 35px; height: 35px; cursor: pointer; font-size: 1.1em; transition: 0.2s; display: flex; align-items: center; justify-content: center; margin: 0 auto; }
         .btn-icon-round.has-notes { background-color: #ff9800; color: #1a1a1a; }
@@ -154,7 +173,7 @@
         .cand-rejected { background-color: rgba(211, 47, 47, 0.15) !important; border-left: 5px solid #d32f2f; }
 
         /* Hide screens */
-        #step2-login-screen, #main-app, #history-ent-screen, #logs-screen, #candidatures-screen { display: none; }
+        #step2-login-screen, #main-app, #history-ent-screen, #quotas-screen, #logs-screen, #candidatures-screen { display: none; }
         
     </style>
 </head>
@@ -166,8 +185,8 @@
         </div>
         
         <div id="top-user-badge" class="top-right-user">
-            <div style="color: #e0e0e0; margin-bottom: 2px;">👤 Session : <span id="top-user-name" style="color:#ff9800; font-weight:bold;"></span></div>
-            <div style="color: #e0e0e0;">🏅 Grade : <span id="top-user-grade" style="color:#ff9800; font-weight:bold;"></span></div>
+            <div style="color: #e0e0e0; margin-bottom: 2px;">👤 Session : <span id="top-user-name"></span></div>
+            <div style="color: #e0e0e0;">🏅 Grade : <span id="top-user-grade"></span></div>
         </div>
 
         <!-- Login Employé Pt 1 -->
@@ -202,9 +221,10 @@
             <div class="navbar">
                 <button class="nav-btn active" id="btn-history" onclick="switchTab('history-screen')">📋 Suivi Civils</button>
                 <button class="nav-btn" id="btn-history-ent" onclick="switchTab('history-ent-screen')">🏢 Suivi Pros</button>
+                <button class="nav-btn" id="btn-quotas" onclick="switchTab('quotas-screen')">⛽ Quotas</button>
                 <button class="nav-btn" id="btn-candidatures" style="display:none;" onclick="switchTab('candidatures-screen')">📄 Candidatures</button>
                 <button class="nav-btn" id="btn-logs" style="display:none;" onclick="switchTab('logs-screen')">📊 Logs</button>
-                <button class="nav-btn" style="background-color: #d32f2f; border: 1px solid #b71c1c;" onclick="location.reload()">❌ Déconnextion</button>
+                <button class="nav-btn" style="background-color: #d32f2f; border: 1px solid #b71c1c;" onclick="location.reload()">❌ Déconnexion</button>
             </div>
 
             <!-- Suivi Civils -->
@@ -263,6 +283,64 @@
                 </div>
             </div>
 
+            <!-- Quotas -->
+            <div id="quotas-screen">
+                <h1 style="color: #00acc1; font-size: 2.2em; margin-bottom: 0;">Quotas Ravitailleurs ⛽</h1>
+                <p style="font-size: 0.9em; color: #aaa; margin-top: 5px;">Déclaration et suivi des objectifs de ravitaillement hebdomadaires.</p>
+
+                <!-- Formulaire de saisie Employé -->
+                <div style="background-color: rgba(34, 34, 34, 0.6); padding: 20px; border-radius: 10px; border: 1px solid #00acc1; margin-top: 20px;">
+                    <h3 style="color: #00acc1; border-bottom: 2px solid #00acc1; margin-top: 0; padding-bottom: 10px; text-align: left;">SAISIR UN RAVITAILLEMENT</h3>
+                    <div style="display: flex; gap: 10px; justify-content: space-between; flex-wrap: wrap;">
+                        <input type="week" id="quota-week" class="info-input" style="width: 30%; border-color: #00acc1; margin-bottom: 0;">
+                        <input type="number" id="quota-bidons" class="info-input" placeholder="Nombre de bidons" style="width: 30%; border-color: #00acc1; margin-bottom: 0;">
+                        <input type="number" id="quota-montant" class="info-input" placeholder="Montant généré ($)" style="width: 30%; border-color: #00acc1; margin-bottom: 0;">
+                    </div>
+                    <div style="display: flex; justify-content: flex-end; margin-top: 15px;">
+                        <button class="btn" style="width: 30%; background: linear-gradient(45deg, #00acc1, #00838f); color: white;" onclick="submitQuota()">AJOUTER AU QUOTA</button>
+                    </div>
+                </div>
+
+                <!-- Tableau Récapitulatif -->
+                <h3 style="color: #00acc1; border-bottom: 2px solid #00acc1; margin-top: 40px; padding-bottom: 10px; text-align: left;">RÉCAPITULATIF HEBDOMADAIRE <span style="color:#aaa; font-size:0.7em;">(Objectif : 1500 bidons/semaine)</span></h3>
+                <table class="history-table" id="quotas-recap-table">
+                    <thead>
+                        <tr>
+                            <th style="width:15%;">Semaine</th>
+                            <th style="width:20%;">Employé</th>
+                            <th style="width:15%;">Bidons Total</th>
+                            <th style="width:30%;">Progression Objectif</th>
+                            <th style="width:20%;">Revenus Générés</th>
+                        </tr>
+                    </thead>
+                    <tbody id="quotas-recap-body"></tbody>
+                </table>
+
+                <!-- Historique des Saisies -->
+                <h3 style="color: #00acc1; border-bottom: 2px solid #00acc1; margin-top: 40px; padding-bottom: 10px; text-align: left;">HISTORIQUE DES SAISIES INDIVIDUELLES</h3>
+                <input type="text" id="search-quotas" class="info-input" placeholder="🔍 Rechercher (Employé, Semaine...)" onkeyup="filterQuotas()" style="border-color: #00acc1; margin-top: 10px;">
+                
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th style="width:15%;">Date de saisie</th>
+                            <th style="width:15%;">Semaine</th>
+                            <th style="width:20%;">Employé</th>
+                            <th style="width:15%;">Bidons ajoutés</th>
+                            <th style="width:20%;">Montant déclaré</th>
+                            <th id="quota-action-th" style="width:15%; display:none; text-align:center;">Act</th>
+                        </tr>
+                    </thead>
+                    <tbody id="quotas-history-body"></tbody>
+                </table>
+                
+                <div class="pagination-container">
+                    <button class="page-btn" style="border-color: #00acc1;" onclick="changeQuotaPage(-1)">⬅️</button>
+                    <span>Page <input type="number" id="quota-page-input" class="page-input" style="border-color: #00acc1;" value="1" onchange="goToQuotaPage()"> / <span id="quota-total-pages">1</span></span>
+                    <button class="page-btn" style="border-color: #00acc1;" onclick="changeQuotaPage(1)">➡️</button>
+                </div>
+            </div>
+
             <!-- Candidatures -->
             <div id="candidatures-screen">
                 <h1 style="color: #1976d2; font-size: 2.2em; margin-bottom: 0;">Candidatures</h1>
@@ -308,9 +386,9 @@
                 </table>
                 
                 <div class="pagination-container" style="width: 70%; margin: 15px auto;">
-                    <button class="page-btn" onclick="changeLogPage(-1)">⬅️</button>
-                    <span>Page <input type="number" id="log-page-input" class="page-input" value="1" onchange="goToLogPage()"> / <span id="log-total-pages">1</span></span>
-                    <button class="page-btn" onclick="changeLogPage(1)">➡️</button>
+                    <button class="page-btn" style="border-color: #64b5f6;" onclick="changeLogPage(-1)">⬅️</button>
+                    <span>Page <input type="number" id="log-page-input" class="page-input" style="border-color: #64b5f6;" value="1" onchange="goToLogPage()"> / <span id="log-total-pages">1</span></span>
+                    <button class="page-btn" style="border-color: #64b5f6;" onclick="changeLogPage(1)">➡️</button>
                 </div>
             </div>
             
@@ -359,12 +437,18 @@
         let filteredCandidatures = [];
         let logsHistory = [];
         let filteredLogs = [];
+        let quotasHistory = [];
+        let filteredQuotas = [];
 
         let currentOrderPage = 1;
         let currentEntOrderPage = 1;
         let currentCandPage = 1;
         let currentLogPage = 1;
+        let currentQuotaPage = 1;
         const perPage = 10;
+        
+        // Configuration de l'objectif hebdomadaire (modifiable ici)
+        const QUOTA_OBJECTIF = 1500;
 
         function checkLogin() {
             const u = document.getElementById("username").value;
@@ -403,7 +487,6 @@
             document.getElementById("login-screen").style.display = "block";
             document.getElementById("error-step2").style.display = "none";
             
-            // On vide les champs du formulaire étape 2 par sécurité
             document.getElementById("step2-firstname").value = "";
             document.getElementById("step2-lastname").value = "";
             pendingUser = null;
@@ -447,12 +530,11 @@
             document.getElementById("step2-login-screen").style.display = "none";
             document.getElementById("main-app").style.display = "block";
             
-            // Accès aux candidatures : Admin, Direction ET Gestion (RH)
+            // Affichage des onglets Restreints (Candidatures, Logs)
             if (accountId === "admin" || accountId === "Direction Paleto" || accountId === "Gestion Paleto") { 
                 document.getElementById("btn-candidatures").style.display = "block"; 
                 syncCandidatures(); 
             }
-            // Accès aux logs : Admin, Direction, Gestion (RH) ET Responsable
             if (accountId === "admin" || accountId === "Direction Paleto" || accountId === "Gestion Paleto" || accountId === "Responsable") { 
                 document.getElementById("btn-logs").style.display = "block"; 
                 syncLogs(); 
@@ -462,86 +544,205 @@
             document.getElementById("top-user-name").innerText = displayFullName;
             document.getElementById("top-user-grade").innerText = grade || "Non défini";
             
+            // Set par défaut la semaine en cours dans l'onglet Quota
+            document.getElementById("quota-week").value = getCurrentWeek();
+
             syncDatabase(); 
+            syncQuotas(); // Lancement de la synchronisation des quotas
             switchTab('history-screen'); 
         }
 
-        // --- GESTION DES ONGLETS CORRIGÉE ---
+        // --- GESTION DES ONGLETS & COULEURS ---
         function switchTab(tabId) {
-            // Dictionnaire associant chaque écran à l'ID de son bouton
             const tabs = {
-                'history-screen': 'btn-history',
-                'history-ent-screen': 'btn-history-ent',
-                'candidatures-screen': 'btn-candidatures',
-                'logs-screen': 'btn-logs'
+                'history-screen': { btn: 'btn-history', color: '#4caf50' },
+                'history-ent-screen': { btn: 'btn-history-ent', color: '#ce93d8' },
+                'quotas-screen': { btn: 'btn-quotas', color: '#00acc1' },
+                'candidatures-screen': { btn: 'btn-candidatures', color: '#1976d2' },
+                'logs-screen': { btn: 'btn-logs', color: '#64b5f6' }
             };
 
-            // 1. On cache tous les écrans et on enlève la couleur (classe "active") de tous les boutons
             for (let screenId in tabs) {
                 document.getElementById(screenId).style.display = 'none';
-                let btnId = tabs[screenId];
+                let btnId = tabs[screenId].btn;
                 if (document.getElementById(btnId)) {
                     document.getElementById(btnId).classList.remove('active');
                 }
             }
 
-            // 2. On affiche l'écran demandé et on colorie (ajoute la classe "active") son bouton
             document.getElementById(tabId).style.display = 'block';
-            let activeBtnId = tabs[tabId];
-            if (activeBtnId && document.getElementById(activeBtnId)) {
-                document.getElementById(activeBtnId).classList.add('active');
+            let activeTab = tabs[tabId];
+            if (activeTab) {
+                if (document.getElementById(activeTab.btn)) {
+                    document.getElementById(activeTab.btn).classList.add('active');
+                }
+                // Changer la couleur globale (bordures en haut)
+                document.documentElement.style.setProperty('--theme-color', activeTab.color);
             }
         }
 
-        // --- DATABASE SYNC ---
+        // --- OUTILS CALENDRIER ---
+        function getCurrentWeek() {
+            const d = new Date();
+            d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7));
+            const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+            const weekNo = Math.ceil(( ( (d - yearStart) / 86400000) + 1)/7);
+            return d.getUTCFullYear() + "-W" + (weekNo < 10 ? '0' : '') + weekNo;
+        }
+
+        // --- DATABASE GENERAL SYNC ---
         function syncDatabase() {
             db.ref('orders').orderByChild('timestamp').on('value', (snapshot) => {
                 ordersHistory = []; 
                 ordersEntHistory = [];
-                
                 snapshot.forEach((child) => { 
                     const order = { id: child.key, ...child.val() };
-                    if (order.type === "Entreprise") {
-                        ordersEntHistory.unshift(order); 
-                    } else {
-                        ordersHistory.unshift(order);
-                    }
+                    if (order.type === "Entreprise") { ordersEntHistory.unshift(order); } 
+                    else { ordersHistory.unshift(order); }
                 });
                 filterOrders(); 
                 filterEntOrders();
             });
         }
 
-        function updateField(path, val) { 
-            db.ref(path).set(val); 
-        }
-        function del(path) { 
-            if(confirm("Supprimer définitivement cet élément de la base de données ?")) {
-                db.ref(path).remove(); 
-            }
-        }
+        function updateField(path, val) { db.ref(path).set(val); }
+        function del(path) { if(confirm("Supprimer définitivement cet élément de la base de données ?")) db.ref(path).remove(); }
 
         // --- RENDER HELPERS ---
         function getEmployeOptions(currentAssignee) {
             let opts = `<option value="">-- Non assigné --</option>`;
-            
             const names = authorizedUsers.filter(u => !u.needsDetails && u.name !== "admin").map(u => u.name);
             validManagementUsers.forEach(u => names.push(u.fname + " " + u.lname));
-            
-            if(!names.includes(currentSessionName) && currentAccountId !== "admin") {
-                names.push(currentSessionName);
-            }
-            if(currentAssignee && !names.includes(currentAssignee) && currentAssignee !== "admin") {
-                names.push(currentAssignee);
-            }
-            
+            if(!names.includes(currentSessionName) && currentAccountId !== "admin") names.push(currentSessionName);
+            if(currentAssignee && !names.includes(currentAssignee) && currentAssignee !== "admin") names.push(currentAssignee);
             const uniqueNames = [...new Set(names)];
-            uniqueNames.forEach(n => {
-                opts += `<option value="${n}" ${currentAssignee === n ? 'selected' : ''}>${n}</option>`;
-            });
-            
+            uniqueNames.forEach(n => { opts += `<option value="${n}" ${currentAssignee === n ? 'selected' : ''}>${n}</option>`; });
             return opts;
         }
+
+        // --- QUOTAS RAVITAILLEURS ---
+        function submitQuota() {
+            const week = document.getElementById("quota-week").value;
+            const bidons = parseInt(document.getElementById("quota-bidons").value);
+            const montant = parseFloat(document.getElementById("quota-montant").value);
+
+            if(!week || isNaN(bidons) || isNaN(montant) || bidons <= 0) {
+                alert("Veuillez remplir correctement la semaine, le nombre de bidons (minimum 1) et le montant.");
+                return;
+            }
+
+            const newQuotaEntry = {
+                employe: currentSessionName,
+                semaine: week,
+                bidons: bidons,
+                montant: montant,
+                dateCreation: new Date().toLocaleString('fr-FR'),
+                timestamp: firebase.database.ServerValue.TIMESTAMP
+            };
+
+            db.ref('quotas').push(newQuotaEntry).then(() => {
+                document.getElementById("quota-bidons").value = "";
+                document.getElementById("quota-montant").value = "";
+                alert("✅ Ravitaillement ajouté avec succès !");
+            }).catch(e => alert("Erreur : " + e.message));
+        }
+
+        function syncQuotas() {
+            db.ref('quotas').orderByChild('timestamp').on('value', (snapshot) => {
+                quotasHistory = [];
+                snapshot.forEach(child => {
+                    quotasHistory.unshift({ id: child.key, ...child.val() });
+                });
+                filterQuotas(); // Appelle le rendu
+            });
+        }
+
+        function filterQuotas() {
+            const query = document.getElementById('search-quotas').value.toLowerCase();
+            filteredQuotas = quotasHistory.filter(q => {
+                const str = `${q.employe} ${q.semaine} ${q.dateCreation}`.toLowerCase();
+                return str.includes(query);
+            });
+            currentQuotaPage = 1;
+            renderQuotas();
+        }
+
+        function changeQuotaPage(delta) { currentQuotaPage += delta; renderQuotas(); }
+        function goToQuotaPage() { currentQuotaPage = parseInt(document.getElementById('quota-page-input').value) || 1; renderQuotas(); }
+
+        function renderQuotas() {
+            // 1. GESTION DU RÉCAPITULATIF (Groupé par Employé et par Semaine)
+            const recap = {};
+            quotasHistory.forEach(q => {
+                const key = q.semaine + "_" + q.employe;
+                if(!recap[key]) {
+                    recap[key] = { semaine: q.semaine, employe: q.employe, bidons: 0, montant: 0 };
+                }
+                recap[key].bidons += parseInt(q.bidons) || 0;
+                recap[key].montant += parseFloat(q.montant) || 0;
+            });
+
+            const recapArray = Object.values(recap).sort((a, b) => b.semaine.localeCompare(a.semaine)); // Tri par semaine descendante
+            const recapBody = document.getElementById('quotas-recap-body');
+            recapBody.innerHTML = '';
+
+            if(recapArray.length === 0) {
+                recapBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Aucune donnée de quota enregistrée.</td></tr>';
+            } else {
+                recapArray.forEach(r => {
+                    const percentRaw = (r.bidons / QUOTA_OBJECTIF) * 100;
+                    const percent = Math.min(percentRaw, 100).toFixed(0); // Max 100% visuel
+                    const isSuccess = r.bidons >= QUOTA_OBJECTIF;
+                    const fillClass = isSuccess ? 'progress-bar-fill success' : 'progress-bar-fill';
+                    
+                    recapBody.innerHTML += `
+                    <tr>
+                        <td style="color:#aaa;">${r.semaine.replace('-W', ' - S')}</td>
+                        <td><strong style="color:#00acc1;">${r.employe}</strong></td>
+                        <td style="font-weight:bold; font-size:1.1em;">${r.bidons}</td>
+                        <td>
+                            <div class="progress-bar-bg">
+                                <div class="${fillClass}" style="width: ${percent}%;"></div>
+                                <div class="progress-bar-text">${percent}% ${isSuccess ? '✅' : ''}</div>
+                            </div>
+                        </td>
+                        <td style="color:#4caf50; font-weight:bold;">${r.montant.toFixed(2)} $</td>
+                    </tr>`;
+                });
+            }
+
+            // 2. GESTION DE L'HISTORIQUE DÉTAILLÉ (Tableau du bas)
+            const historyBody = document.getElementById('quotas-history-body');
+            historyBody.innerHTML = '';
+
+            const totalPages = Math.max(1, Math.ceil(filteredQuotas.length / perPage));
+            if(currentQuotaPage < 1) currentQuotaPage = 1; 
+            if(currentQuotaPage > totalPages) currentQuotaPage = totalPages;
+            
+            document.getElementById('quota-total-pages').innerText = totalPages; 
+            document.getElementById('quota-page-input').value = currentQuotaPage;
+
+            const isManager = (currentAccountId === 'admin' || currentAccountId === 'Direction Paleto' || currentAccountId === 'Gestion Paleto' || currentAccountId === 'Responsable');
+            document.getElementById('quota-action-th').style.display = isManager ? 'table-cell' : 'none';
+
+            const startIndex = (currentQuotaPage - 1) * perPage;
+            const endIndex = startIndex + perPage;
+
+            filteredQuotas.slice(startIndex, endIndex).forEach(q => {
+                let actionTd = isManager ? `<td style="text-align:center;"><button class="btn-action btn-delete" onclick="del('quotas/${q.id}')">🗑️</button></td>` : '';
+                
+                historyBody.innerHTML += `
+                <tr>
+                    <td style="color:#aaa;">${q.dateCreation}</td>
+                    <td style="color:#ccc;">${q.semaine.replace('-W', ' - S')}</td>
+                    <td><strong style="color:#00acc1;">${q.employe}</strong></td>
+                    <td style="font-weight:bold;">+ ${q.bidons} bidons</td>
+                    <td style="color:#4caf50;">${parseFloat(q.montant).toFixed(2)} $</td>
+                    ${actionTd}
+                </tr>`;
+            });
+        }
+
 
         // --- CIVILS ---
         function filterOrders() {
@@ -554,15 +755,8 @@
             renderHistory();
         }
 
-        function changeOrderPage(delta) { 
-            currentOrderPage += delta; 
-            renderHistory(); 
-        }
-
-        function goToOrderPage() { 
-            currentOrderPage = parseInt(document.getElementById('order-page-input').value) || 1; 
-            renderHistory(); 
-        }
+        function changeOrderPage(delta) { currentOrderPage += delta; renderHistory(); }
+        function goToOrderPage() { currentOrderPage = parseInt(document.getElementById('order-page-input').value) || 1; renderHistory(); }
 
         function renderHistory() {
             const tbody = document.getElementById('history-body'); 
@@ -580,19 +774,11 @@
             
             filteredOrders.slice(startIndex, endIndex).forEach(order => {
                 const statOpts = ["En attente de préparation", "Disponible à la livraison", "Livraison en cours", "Livré"].map(s => `<option value="${s}" ${order.status===s?'selected':''}>${s}</option>`).join('');
-                
                 tbody.innerHTML += `
                 <tr>
                     <td style="color:#aaa;">${order.dateCreation}</td>
-                    <td>
-                        <strong style="color:#fff;">${order.client}</strong><br>
-                        <span style="color:#ff9800; font-size:0.9em;">📞 ${order.phone}</span>
-                    </td>
-                    <td style="text-align:left; line-height:1.4;">
-                        <span style="color:#81c784;">🛒 <strong>Panier :</strong></span> ${order.articles}<br>
-                        <span style="color:#64b5f6;">📍 <strong>Livraison :</strong></span> ${order.zone} <i>(${order.dateLivraison})</i><br>
-                        <span style="color:#e57373;">📝 <strong>Notes :</strong></span> ${order.infos}
-                    </td>
+                    <td><strong style="color:#fff;">${order.client}</strong><br><span style="color:#ff9800; font-size:0.9em;">📞 ${order.phone}</span></td>
+                    <td style="text-align:left; line-height:1.4;"><span style="color:#81c784;">🛒 <strong>Panier :</strong></span> ${order.articles}<br><span style="color:#64b5f6;">📍 <strong>Livraison :</strong></span> ${order.zone} <i>(${order.dateLivraison})</i><br><span style="color:#e57373;">📝 <strong>Notes :</strong></span> ${order.infos}</td>
                     <td style="color:#4caf50; font-weight:bold;">${order.total} $</td>
                     <td><select class="status-select charge-select" onchange="updateField('orders/${order.id}/enCharge', this.value)">${getEmployeOptions(order.enCharge)}</select></td>
                     <td><select class="status-select" onchange="updateField('orders/${order.id}/status', this.value)">${statOpts}</select></td>
@@ -612,15 +798,8 @@
             renderEntHistory();
         }
 
-        function changeEntOrderPage(delta) { 
-            currentEntOrderPage += delta; 
-            renderEntHistory(); 
-        }
-
-        function goToEntOrderPage() { 
-            currentEntOrderPage = parseInt(document.getElementById('order-ent-page-input').value) || 1; 
-            renderEntHistory(); 
-        }
+        function changeEntOrderPage(delta) { currentEntOrderPage += delta; renderEntHistory(); }
+        function goToEntOrderPage() { currentEntOrderPage = parseInt(document.getElementById('order-ent-page-input').value) || 1; renderEntHistory(); }
 
         function renderEntHistory() {
             const tbody = document.getElementById('history-ent-body'); 
@@ -638,27 +817,14 @@
             
             filteredEntOrders.slice(startIndex, endIndex).forEach(order => {
                 const statOpts = ["En attente de préparation", "Disponible à la livraison", "Livraison en cours", "Livré"].map(s => `<option value="${s}" ${order.status===s?'selected':''}>${s}</option>`).join('');
-                
-                let entName = order.client;
-                let contact = ""; 
-                if(order.client.includes("(")) { 
-                    entName = order.client.split(' (')[0]; 
-                    contact = order.client.split('(')[1].replace(')',''); 
-                }
+                let entName = order.client; let contact = ""; 
+                if(order.client.includes("(")) { entName = order.client.split(' (')[0]; contact = order.client.split('(')[1].replace(')',''); }
                 
                 tbody.innerHTML += `
                 <tr>
                     <td style="color:#aaa;">${order.dateCreation}</td>
-                    <td>
-                        <strong style="color:#ce93d8;">${entName}</strong><br>
-                        <span style="color:#aaa; font-size:0.8em;">👤 ${contact}</span><br>
-                        <span style="color:#ff9800; font-size:0.8em;">📞 ${order.phone}</span>
-                    </td>
-                    <td style="text-align:left; line-height:1.4;">
-                        <span style="color:#81c784;">🛒 <strong>Panier :</strong></span> ${order.articles}<br>
-                        <span style="color:#64b5f6;">🗓️ <strong>Date prévue :</strong></span> ${order.dateLivraison}<br>
-                        <span style="color:#e57373;">📝 <strong>Notes :</strong></span> ${order.infos}
-                    </td>
+                    <td><strong style="color:#ce93d8;">${entName}</strong><br><span style="color:#aaa; font-size:0.8em;">👤 ${contact}</span><br><span style="color:#ff9800; font-size:0.8em;">📞 ${order.phone}</span></td>
+                    <td style="text-align:left; line-height:1.4;"><span style="color:#81c784;">🛒 <strong>Panier :</strong></span> ${order.articles}<br><span style="color:#64b5f6;">🗓️ <strong>Date prévue :</strong></span> ${order.dateLivraison}<br><span style="color:#e57373;">📝 <strong>Notes :</strong></span> ${order.infos}</td>
                     <td style="color:#ab47bc; font-weight:bold;">${order.total} $</td>
                     <td><select class="status-select charge-select" style="border-color:#ce93d8;" onchange="updateField('orders/${order.id}/enCharge', this.value)">${getEmployeOptions(order.enCharge)}</select></td>
                     <td><select class="status-select" style="border-color:#ce93d8;" onchange="updateField('orders/${order.id}/status', this.value)">${statOpts}</select></td>
@@ -671,64 +837,35 @@
         function syncCandidatures() {
             db.ref('candidatures').orderByChild('timestamp').on('value', (snapshot) => { 
                 candidaturesHistory = []; 
-                snapshot.forEach(c => {
-                    candidaturesHistory.unshift({ id: c.key, ...c.val() });
-                }); 
+                snapshot.forEach(c => { candidaturesHistory.unshift({ id: c.key, ...c.val() }); }); 
                 filterCandidatures(); 
             });
         }
 
         function filterCandidatures() { 
             const query = document.getElementById('search-cands').value.toLowerCase(); 
-            filteredCandidatures = candidaturesHistory.filter(c => {
-                const str = `${c.prenom} ${c.nom} ${c.experience} ${c.status}`.toLowerCase();
-                return str.includes(query);
-            }); 
-            currentCandPage = 1; 
-            renderCandidatures(); 
+            filteredCandidatures = candidaturesHistory.filter(c => { return `${c.prenom} ${c.nom} ${c.experience} ${c.status}`.toLowerCase().includes(query); }); 
+            currentCandPage = 1; renderCandidatures(); 
         }
 
-        function changeCandPage(delta) { 
-            currentCandPage += delta; 
-            renderCandidatures(); 
-        }
-
-        function goToCandPage() { 
-            currentCandPage = parseInt(document.getElementById('cand-page-input').value) || 1; 
-            renderCandidatures(); 
-        }
+        function changeCandPage(delta) { currentCandPage += delta; renderCandidatures(); }
+        function goToCandPage() { currentCandPage = parseInt(document.getElementById('cand-page-input').value) || 1; renderCandidatures(); }
 
         function renderCandidatures() {
-            const tbody = document.getElementById('candidatures-body'); 
-            tbody.innerHTML = '';
-            
+            const tbody = document.getElementById('candidatures-body'); tbody.innerHTML = '';
             const totalPages = Math.max(1, Math.ceil(filteredCandidatures.length / perPage));
-            if(currentCandPage < 1) currentCandPage = 1; 
-            if(currentCandPage > totalPages) currentCandPage = totalPages;
+            if(currentCandPage < 1) currentCandPage = 1; if(currentCandPage > totalPages) currentCandPage = totalPages;
+            document.getElementById('cand-total-pages').innerText = totalPages; document.getElementById('cand-page-input').value = currentCandPage;
             
-            document.getElementById('cand-total-pages').innerText = totalPages; 
-            document.getElementById('cand-page-input').value = currentCandPage;
-            
-            const startIndex = (currentCandPage - 1) * perPage;
-            const endIndex = startIndex + perPage;
-            
+            const startIndex = (currentCandPage - 1) * perPage; const endIndex = startIndex + perPage;
             filteredCandidatures.slice(startIndex, endIndex).forEach(cand => {
-                let rowClass = ""; 
-                if(cand.status === "accepté") { rowClass="cand-accepted"; }
-                else if(cand.status === "refusé") { rowClass="cand-rejected"; }
-                
+                let rowClass = ""; if(cand.status === "accepté") { rowClass="cand-accepted"; } else if(cand.status === "refusé") { rowClass="cand-rejected"; }
                 tbody.innerHTML += `
                 <tr class="${rowClass}">
                     <td style="color:#aaa;">${cand.dateCreation}</td>
                     <td><strong style="color:#fff; font-size:1.1em;">${cand.prenom} ${cand.nom}</strong></td>
-                    <td>
-                        🎂 ${cand.age} ans<br>
-                        <span style="color:#ff9800;">📞 ${cand.phone}</span>
-                    </td>
-                    <td style="text-align:left; line-height:1.4;">
-                        <span style="color:#ddd;"><i>Exp:</i> "${cand.experience}"</span><br><br>
-                        <span style="color:#b3e5fc;"><i>Mot:</i> "${cand.motivation}"</span>
-                    </td>
+                    <td>🎂 ${cand.age} ans<br><span style="color:#ff9800;">📞 ${cand.phone}</span></td>
+                    <td style="text-align:left; line-height:1.4;"><span style="color:#ddd;"><i>Exp:</i> "${cand.experience}"</span><br><br><span style="color:#b3e5fc;"><i>Mot:</i> "${cand.motivation}"</span></td>
                     <td style="text-align:center; vertical-align:middle;">
                         <button class="btn-icon-round ${cand.appreciation ? 'has-notes' : ''}" onclick="document.getElementById('app-${cand.id}').style.display = document.getElementById('app-${cand.id}').style.display === 'none' ? 'block' : 'none'">
                             ${cand.appreciation ? '📝' : '➕'}
@@ -750,60 +887,31 @@
         // --- LOGS ---
         function syncLogs() { 
             db.ref('logs').orderByChild('timestamp').on('value', (snapshot) => { 
-                logsHistory = []; 
-                snapshot.forEach(log => {
-                    logsHistory.unshift({ id: log.key, ...log.val() });
-                }); 
-                filterLogs(); 
+                logsHistory = []; snapshot.forEach(log => { logsHistory.unshift({ id: log.key, ...log.val() }); }); filterLogs(); 
             }); 
         }
 
         function filterLogs() { 
             const query = document.getElementById('search-logs').value.toLowerCase(); 
-            filteredLogs = logsHistory.filter(l => {
-                const str = `${l.employe} ${l.date} ${l.grade}`.toLowerCase();
-                return str.includes(query);
-            }); 
-            currentLogPage = 1; 
-            renderLogs(); 
+            filteredLogs = logsHistory.filter(l => { return `${l.employe} ${l.date} ${l.grade}`.toLowerCase().includes(query); }); 
+            currentLogPage = 1; renderLogs(); 
         }
 
-        function changeLogPage(delta) { 
-            currentLogPage += delta; 
-            renderLogs(); 
-        }
-
-        function goToLogPage() { 
-            currentLogPage = parseInt(document.getElementById('log-page-input').value) || 1; 
-            renderLogs(); 
-        }
+        function changeLogPage(delta) { currentLogPage += delta; renderLogs(); }
+        function goToLogPage() { currentLogPage = parseInt(document.getElementById('log-page-input').value) || 1; renderLogs(); }
 
         function renderLogs() {
-            const tbody = document.getElementById('logs-body'); 
-            tbody.innerHTML = '';
-            
+            const tbody = document.getElementById('logs-body'); tbody.innerHTML = '';
             const totalPages = Math.max(1, Math.ceil(filteredLogs.length / perPage));
-            if(currentLogPage < 1) currentLogPage = 1; 
-            if(currentLogPage > totalPages) currentLogPage = totalPages;
-            
-            document.getElementById('log-total-pages').innerText = totalPages; 
-            document.getElementById('log-page-input').value = currentLogPage;
-            
+            if(currentLogPage < 1) currentLogPage = 1; if(currentLogPage > totalPages) currentLogPage = totalPages;
+            document.getElementById('log-total-pages').innerText = totalPages; document.getElementById('log-page-input').value = currentLogPage;
             document.getElementById('th-log-action').style.display = currentAccountId === 'admin' ? 'table-cell' : 'none';
             
-            const startIndex = (currentLogPage - 1) * perPage;
-            const endIndex = startIndex + perPage;
-            
+            const startIndex = (currentLogPage - 1) * perPage; const endIndex = startIndex + perPage;
             filteredLogs.slice(startIndex, endIndex).forEach(log => {
                 let actionTd = currentAccountId === "admin" ? `<td style="text-align:center;"><button class="btn-action btn-delete" onclick="del('logs/${log.id}')">🗑️</button></td>` : '';
                 const gradeBadge = log.grade ? ` <span style="color:#ff9800; font-size:0.85em;">(${log.grade})</span>` : '';
-                
-                tbody.innerHTML += `
-                <tr>
-                    <td style="color:#aaa;">${log.date}</td>
-                    <td><strong style="color:#64b5f6;">${log.employe}</strong>${gradeBadge}</td>
-                    ${actionTd}
-                </tr>`;
+                tbody.innerHTML += `<tr><td style="color:#aaa;">${log.date}</td><td><strong style="color:#64b5f6;">${log.employe}</strong>${gradeBadge}</td>${actionTd}</tr>`;
             });
         }
 
