@@ -669,10 +669,18 @@
 
         function filterQuotas() {
             const query = document.getElementById('search-quotas').value.toLowerCase();
+            const isManager = (currentAccountId === 'admin' || currentAccountId === 'Direction Paleto' || currentAccountId === 'Gestion Paleto' || currentAccountId === 'Responsable');
+            
             filteredQuotas = quotasHistory.filter(q => {
+                // Si l'utilisateur n'est pas un manager, on cache les quotas des autres employés
+                if (!isManager && q.employe !== currentSessionName) {
+                    return false;
+                }
+                
                 const str = `${q.employe} ${q.semaine} ${q.dateCreation}`.toLowerCase();
                 return str.includes(query);
             });
+            
             currentQuotaPage = 1;
             renderQuotas();
         }
@@ -681,9 +689,9 @@
         function goToQuotaPage() { currentQuotaPage = parseInt(document.getElementById('quota-page-input').value) || 1; renderQuotas(); }
 
         function renderQuotas() {
-            // 1. GESTION DU RÉCAPITULATIF 
+            // 1. GESTION DU RÉCAPITULATIF (Utilise filteredQuotas pour respecter les permissions et la recherche)
             const recap = {};
-            quotasHistory.forEach(q => {
+            filteredQuotas.forEach(q => {
                 const key = q.semaine + "_" + q.employe;
                 if(!recap[key]) {
                     recap[key] = { semaine: q.semaine, employe: q.employe, bidons: 0, montant: 0 };
