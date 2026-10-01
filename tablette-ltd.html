@@ -297,7 +297,7 @@
                 <div id="manager-add-station" class="manager-form" style="border-color: #ff5722;">
                     <strong style="color:#ff5722;">Outil Direction : Nouvelle Station</strong>
                     <input type="text" id="new-station-name" class="info-input" placeholder="Numéro et Nom Station" style="width: 30%; margin:0; border-color:#ff5722;">
-                    <input type="number" id="new-station-cap" class="info-input" placeholder="Capacité Station (Ex: 10000)" style="width: 25%; margin:0; border-color:#ff5722;">
+                    <input type="number" id="new-station-cap" class="info-input" placeholder="Capacité Station" style="width: 25%; margin:0; border-color:#ff5722;">
                     <button class="btn btn-small" style="background:#ff5722; color:white; border:none; width: 20%;" onclick="createStation()">+ Créer la station</button>
                 </div>
 
@@ -306,7 +306,7 @@
                         <tr>
                             <th style="width:30%;">Localisation Station</th>
                             <th style="width:40%;">Niveau de Cuve</th>
-                            <th style="width:30%; text-align:center;">Saisie Nouveau Niveau</th>
+                            <th style="width:30%; text-align:center;">Saisie Litrage</th>
                         </tr>
                     </thead>
                     <tbody id="stations-body"></tbody>
@@ -635,7 +635,7 @@
                 
                 let actionHtml = `
                     <div style="display:flex; gap:10px; justify-content:center; align-items:center;">
-                        <input type="number" id="set-fuel-${st.id}" class="info-input" placeholder="Litre actuel" style="width:120px; padding:6px; margin:0; border-color:#ff5722;">
+                        <input type="number" id="set-fuel-${st.id}" class="info-input" placeholder="Litres actuel" style="width:120px; padding:6px; margin:0; border-color:#ff5722;">
                         <button class="btn btn-small" style="background:#ff5722; color:white; border:none; padding:6px 15px;" onclick="setFuel('${st.id}', ${st.capacity})">✓ Valider</button>
                         ${isManager ? `<button class="btn-action btn-delete" style="margin-left:10px; padding:6px 10px;" onclick="del('stations/${st.id}')">🗑️</button>` : ''}
                     </div>
@@ -650,7 +650,7 @@
                     <td>
                         <div class="progress-bar-bg">
                             <div style="height:100%; transition:width 0.5s; width:${pct}%; ${colorClass}"></div>
-                            <div class="progress-bar-text">${st.currentLevel} / ${st.capacity} Litre</div>
+                            <div class="progress-bar-text">${st.currentLevel} / ${st.capacity} Litres</div>
                         </div>
                     </td>
                     <td style="text-align:center;">${actionHtml}</td>
