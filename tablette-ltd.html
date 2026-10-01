@@ -292,7 +292,7 @@
             <!-- SUIVI STATIONS ESSENCE -->
             <div id="stations-screen">
                 <h1 style="color: #ff5722; font-size: 2.2em; margin-bottom: 0;">Stations-Services ⛽</h1>
-                <p style="font-size: 0.9em; color: #aaa; margin-top: 5px;">Suivi et remplissage des cuves de carburant des stations LTD.</p>
+                <p style="font-size: 0.9em; color: #aaa; margin-top: 5px;">Suivi et mise à jour du niveau exact des cuves de carburant.</p>
 
                 <!-- Formulaire ajout Station (Manager uniquement) -->
                 <div id="manager-add-station" class="manager-form" style="border-color: #ff5722;">
@@ -305,9 +305,9 @@
                 <table class="history-table">
                     <thead>
                         <tr>
-                            <th style="width:25%;">Localisation Station</th>
-                            <th style="width:45%;">Niveau de Cuve</th>
-                            <th style="width:30%; text-align:center;">Action Ravitailleur</th>
+                            <th style="width:30%;">Localisation Station</th>
+                            <th style="width:40%;">Niveau de Cuve</th>
+                            <th style="width:30%; text-align:center;">Saisie Nouveau Niveau</th>
                         </tr>
                     </thead>
                     <tbody id="stations-body"></tbody>
@@ -633,14 +633,13 @@
                 const pctRaw = (st.currentLevel / st.capacity) * 100;
                 const pct = Math.min(pctRaw, 100).toFixed(0);
                 
-                // Passe au rouge si la cuve est à moins de 20%
                 let colorClass = pct < 20 ? 'background: linear-gradient(90deg, #c62828, #f44336);' : 'background: linear-gradient(90deg, #d84315, #ff5722);';
                 
                 let actionHtml = `
                     <div style="display:flex; gap:10px; justify-content:center; align-items:center;">
-                        <input type="number" id="add-fuel-${st.id}" class="info-input" placeholder="Qté injectée" style="width:110px; padding:8px; margin:0; border-color:#ff5722;">
-                        <button class="btn btn-small" style="background:#ff5722; color:white; border:none; padding:8px 15px;" onclick="addFuel('${st.id}', ${st.currentLevel}, ${st.capacity})">Remplir</button>
-                        ${isManager ? `<button class="btn-action btn-delete" style="padding:6px 10px;" onclick="del('stations/${st.id}')">🗑️</button>` : ''}
+                        <input type="number" id="set-fuel-${st.id}" class="info-input" placeholder="Niveau exact" style="width:120px; padding:6px; margin:0; border-color:#ff5722;">
+                        <button class="btn btn-small" style="background:#ff5722; color:white; border:none; padding:6px 15px;" onclick="setFuel('${st.id}', ${st.capacity})">✓ Valider</button>
+                        ${isManager ? `<button class="btn-action btn-delete" style="margin-left:10px; padding:6px 10px;" onclick="del('stations/${st.id}')">🗑️</button>` : ''}
                     </div>
                 `;
                 
@@ -648,7 +647,7 @@
                 <tr>
                     <td>
                         <strong style="color:#ff5722; font-size:1.1em;">${st.name}</strong><br>
-                        <span style="font-size:0.8em; color:#aaa;">Dernier remplissage : ${st.lastUpdate}</span>
+                        <span style="font-size:0.8em; color:#aaa;">Mis à jour : ${st.lastUpdate}</span>
                     </td>
                     <td>
                         <div class="progress-bar-bg">
@@ -676,12 +675,14 @@
             document.getElementById('new-station-cap').value = '';
         }
 
-        function addFuel(id, current, capacity) {
-            const addAmount = parseInt(document.getElementById(`add-fuel-${id}`).value);
-            if(isNaN(addAmount) || addAmount <= 0) return alert("Veuillez saisir une quantité valide supérieure à 0.");
+        function setFuel(id, capacity) {
+            const inputVal = document.getElementById(`set-fuel-${id}`).value;
+            if(inputVal === "") return alert("Veuillez saisir le niveau exact de la cuve.");
             
-            let newLevel = current + addAmount;
-            if(newLevel > capacity) newLevel = capacity; // Empêche de dépasser la capacité max
+            let newLevel = parseInt(inputVal);
+            
+            if(isNaN(newLevel) || newLevel < 0) return alert("Veuillez saisir un niveau valide (0 ou plus).");
+            if(newLevel > capacity) newLevel = capacity; 
             
             db.ref('stations/' + id).update({ 
                 currentLevel: newLevel, 
@@ -767,7 +768,7 @@
             if(mode === 'add') newQty += amount;
             if(mode === 'sub') newQty -= amount;
             
-            if(newQty < 0) newQty = 0; // Le stock ne peut pas être négatif
+            if(newQty < 0) newQty = 0; 
             
             db.ref('stocks/' + id).update({ 
                 quantite: newQty, 
