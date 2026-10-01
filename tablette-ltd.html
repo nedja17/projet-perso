@@ -292,13 +292,12 @@
             <!-- SUIVI STATIONS ESSENCE -->
             <div id="stations-screen">
                 <h1 style="color: #ff5722; font-size: 2.2em; margin-bottom: 0;">Stations-Services ⛽</h1>
-                <p style="font-size: 0.9em; color: #aaa; margin-top: 5px;">Suivi et mise à jour du niveau exact des cuves de carburant.</p>
 
                 <!-- Formulaire ajout Station (Manager uniquement) -->
                 <div id="manager-add-station" class="manager-form" style="border-color: #ff5722;">
                     <strong style="color:#ff5722;">Outil Direction : Nouvelle Station</strong>
-                    <input type="text" id="new-station-name" class="info-input" placeholder="Nom (Ex: LTD Paleto)" style="width: 30%; margin:0; border-color:#ff5722;">
-                    <input type="number" id="new-station-cap" class="info-input" placeholder="Capacité Cuve (Ex: 10000)" style="width: 25%; margin:0; border-color:#ff5722;">
+                    <input type="text" id="new-station-name" class="info-input" placeholder="Numéro et Nom Station" style="width: 30%; margin:0; border-color:#ff5722;">
+                    <input type="number" id="new-station-cap" class="info-input" placeholder="Capacité Station (Ex: 10000)" style="width: 25%; margin:0; border-color:#ff5722;">
                     <button class="btn btn-small" style="background:#ff5722; color:white; border:none; width: 20%;" onclick="createStation()">+ Créer la station</button>
                 </div>
 
@@ -317,12 +316,11 @@
             <!-- SUIVI STOCKS INVENTAIRE -->
             <div id="stocks-screen">
                 <h1 style="color: #8d6e63; font-size: 2.2em; margin-bottom: 0;">Gestion des Stocks 📦</h1>
-                <p style="font-size: 0.9em; color: #aaa; margin-top: 5px;">Inventaire de la réserve de la supérette.</p>
 
                 <!-- Formulaire ajout Produit (Manager uniquement) -->
                 <div id="manager-add-stock" class="manager-form" style="border-color: #8d6e63;">
                     <strong style="color:#8d6e63;">Outil Direction : Nouveau Produit</strong>
-                    <input type="text" id="new-stock-name" class="info-input" placeholder="Nom du produit (Ex: Eau)" style="width: 40%; margin:0; border-color:#8d6e63;">
+                    <input type="text" id="new-stock-name" class="info-input" placeholder="Nom du produit" style="width: 40%; margin:0; border-color:#8d6e63;">
                     <input type="number" id="new-stock-qty" class="info-input" placeholder="Quantité de départ" style="width: 20%; margin:0; border-color:#8d6e63;">
                     <button class="btn btn-small" style="background:#8d6e63; color:white; border:none; width: 20%;" onclick="createStock()">+ Ajouter produit</button>
                 </div>
@@ -333,7 +331,7 @@
                     <thead>
                         <tr>
                             <th style="width:30%;">Produit</th>
-                            <th style="width:20%; text-align:center;">Quantité en rayon</th>
+                            <th style="width:20%; text-align:center;">Quantité en stock</th>
                             <th style="width:25%;">Statut</th>
                             <th style="width:25%; text-align:center;">Mettre à jour</th>
                         </tr>
@@ -637,7 +635,7 @@
                 
                 let actionHtml = `
                     <div style="display:flex; gap:10px; justify-content:center; align-items:center;">
-                        <input type="number" id="set-fuel-${st.id}" class="info-input" placeholder="Niveau exact" style="width:120px; padding:6px; margin:0; border-color:#ff5722;">
+                        <input type="number" id="set-fuel-${st.id}" class="info-input" placeholder="Litre actuel" style="width:120px; padding:6px; margin:0; border-color:#ff5722;">
                         <button class="btn btn-small" style="background:#ff5722; color:white; border:none; padding:6px 15px;" onclick="setFuel('${st.id}', ${st.capacity})">✓ Valider</button>
                         ${isManager ? `<button class="btn-action btn-delete" style="margin-left:10px; padding:6px 10px;" onclick="del('stations/${st.id}')">🗑️</button>` : ''}
                     </div>
@@ -652,7 +650,7 @@
                     <td>
                         <div class="progress-bar-bg">
                             <div style="height:100%; transition:width 0.5s; width:${pct}%; ${colorClass}"></div>
-                            <div class="progress-bar-text">${st.currentLevel} / ${st.capacity} Unités</div>
+                            <div class="progress-bar-text">${st.currentLevel} / ${st.capacity} Litre</div>
                         </div>
                     </td>
                     <td style="text-align:center;">${actionHtml}</td>
