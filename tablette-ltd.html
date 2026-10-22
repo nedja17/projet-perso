@@ -170,7 +170,7 @@
         /* CV NOTES */
         .btn-icon-round { background-color: #1976d2; color: white; border: none; border-radius: 50%; width: 35px; height: 35px; cursor: pointer; font-size: 1.1em; transition: 0.2s; display: flex; align-items: center; justify-content: center; margin: 0 auto; }
         .btn-icon-round.has-notes { background-color: #ff9800; color: #1a1a1a; }
-        .appreciation-input { width: 100%; height: 120px; background-color: rgba(0,0,0,0.5); color: white; border: 1px solid #1976d2; border-radius: 4px; padding: 5px; font-size: 0.9em; resize: vertical; margin-bottom: 5px; } /* Hauteur augmentée à 120px */
+        .appreciation-input { width: 100%; height: 60px; background-color: rgba(0,0,0,0.5); color: white; border: 1px solid #1976d2; border-radius: 4px; padding: 5px; font-size: 0.9em; resize: vertical; margin-bottom: 5px; }
         .cand-accepted { background-color: rgba(76, 175, 80, 0.15) !important; border-left: 5px solid #4caf50; }
         .cand-rejected { background-color: rgba(211, 47, 47, 0.15) !important; border-left: 5px solid #d32f2f; }
 
@@ -292,12 +292,13 @@
             <!-- SUIVI STATIONS ESSENCE -->
             <div id="stations-screen">
                 <h1 style="color: #ff5722; font-size: 2.2em; margin-bottom: 0;">Stations-Services ⛽</h1>
+                <p style="font-size: 0.9em; color: #aaa; margin-top: 5px;">Suivi et mise à jour du niveau exact des cuves de carburant.</p>
 
                 <!-- Formulaire ajout Station (Manager uniquement) -->
                 <div id="manager-add-station" class="manager-form" style="border-color: #ff5722;">
                     <strong style="color:#ff5722;">Outil Direction : Nouvelle Station</strong>
-                    <input type="text" id="new-station-name" class="info-input" placeholder="Numéro et Nom Station" style="width: 30%; margin:0; border-color:#ff5722;">
-                    <input type="number" id="new-station-cap" class="info-input" placeholder="Capacité Station" style="width: 25%; margin:0; border-color:#ff5722;">
+                    <input type="text" id="new-station-name" class="info-input" placeholder="Nom (Ex: LTD Paleto)" style="width: 30%; margin:0; border-color:#ff5722;">
+                    <input type="number" id="new-station-cap" class="info-input" placeholder="Capacité Cuve (Ex: 10000)" style="width: 25%; margin:0; border-color:#ff5722;">
                     <button class="btn btn-small" style="background:#ff5722; color:white; border:none; width: 20%;" onclick="createStation()">+ Créer la station</button>
                 </div>
 
@@ -306,7 +307,7 @@
                         <tr>
                             <th style="width:30%;">Localisation Station</th>
                             <th style="width:40%;">Niveau de Cuve</th>
-                            <th style="width:30%; text-align:center;">Saisie Litrage</th>
+                            <th style="width:30%; text-align:center;">Saisie Nouveau Niveau</th>
                         </tr>
                     </thead>
                     <tbody id="stations-body"></tbody>
@@ -316,11 +317,12 @@
             <!-- SUIVI STOCKS INVENTAIRE -->
             <div id="stocks-screen">
                 <h1 style="color: #8d6e63; font-size: 2.2em; margin-bottom: 0;">Gestion des Stocks 📦</h1>
+                <p style="font-size: 0.9em; color: #aaa; margin-top: 5px;">Inventaire de la réserve de la supérette.</p>
 
                 <!-- Formulaire ajout Produit (Manager uniquement) -->
                 <div id="manager-add-stock" class="manager-form" style="border-color: #8d6e63;">
                     <strong style="color:#8d6e63;">Outil Direction : Nouveau Produit</strong>
-                    <input type="text" id="new-stock-name" class="info-input" placeholder="Nom du produit" style="width: 40%; margin:0; border-color:#8d6e63;">
+                    <input type="text" id="new-stock-name" class="info-input" placeholder="Nom du produit (Ex: Eau)" style="width: 40%; margin:0; border-color:#8d6e63;">
                     <input type="number" id="new-stock-qty" class="info-input" placeholder="Quantité de départ" style="width: 20%; margin:0; border-color:#8d6e63;">
                     <button class="btn btn-small" style="background:#8d6e63; color:white; border:none; width: 20%;" onclick="createStock()">+ Ajouter produit</button>
                 </div>
@@ -331,7 +333,7 @@
                     <thead>
                         <tr>
                             <th style="width:30%;">Produit</th>
-                            <th style="width:20%; text-align:center;">Quantité en stock</th>
+                            <th style="width:20%; text-align:center;">Quantité en rayon</th>
                             <th style="width:25%;">Statut</th>
                             <th style="width:25%; text-align:center;">Mettre à jour</th>
                         </tr>
@@ -635,8 +637,8 @@
                 
                 let actionHtml = `
                     <div style="display:flex; gap:10px; justify-content:center; align-items:center;">
-                        <input type="number" id="set-fuel-${st.id}" class="info-input" placeholder="Litres actuel" style="width:120px; padding:6px; margin:0; border-color:#ff5722;">
-                        <button class="btn btn-small" style="background:#ff5722; color:white; border:none; padding:6px 15px;" onclick="setFuel('${st.id}',${st.capacity})">✓ Valider</button>
+                        <input type="number" id="set-fuel-${st.id}" class="info-input" placeholder="Niveau exact" style="width:120px; padding:6px; margin:0; border-color:#ff5722;">
+                        <button class="btn btn-small" style="background:#ff5722; color:white; border:none; padding:6px 15px;" onclick="setFuel('${st.id}', ${st.capacity})">✓ Valider</button>
                         ${isManager ? `<button class="btn-action btn-delete" style="margin-left:10px; padding:6px 10px;" onclick="del('stations/${st.id}')">🗑️</button>` : ''}
                     </div>
                 `;
@@ -649,8 +651,8 @@
                     </td>
                     <td>
                         <div class="progress-bar-bg">
-                            <div style="height:100%; transition:width 0.5s; width:${pct}\%;${colorClass}"></div>
-                            <div class="progress-bar-text">${st.currentLevel} /${st.capacity} Litres</div>
+                            <div style="height:100%; transition:width 0.5s; width:${pct}%; ${colorClass}"></div>
+                            <div class="progress-bar-text">${st.currentLevel} / ${st.capacity} Unités</div>
                         </div>
                     </td>
                     <td style="text-align:center;">${actionHtml}</td>
@@ -725,8 +727,8 @@
                 let actionHtml = `
                     <div style="display:flex; gap:5px; justify-content:center; align-items:center;">
                         <input type="number" id="update-stock-${st.id}" class="info-input" placeholder="Qté" style="width:80px; padding:6px; margin:0; border-color:#8d6e63;">
-                        <button class="btn btn-small" style="background:#4caf50; color:white; border:none; font-size:1.2em;" onclick="updateStock('${st.id}',${st.quantite}, 'add')" title="Ajouter au stock">➕</button>
-                        <button class="btn btn-small" style="background:#f44336; color:white; border:none; font-size:1.2em;" onclick="updateStock('${st.id}',${st.quantite}, 'sub')" title="Retirer du stock">➖</button>
+                        <button class="btn btn-small" style="background:#4caf50; color:white; border:none; font-size:1.2em;" onclick="updateStock('${st.id}', ${st.quantite}, 'add')" title="Ajouter au stock">➕</button>
+                        <button class="btn btn-small" style="background:#f44336; color:white; border:none; font-size:1.2em;" onclick="updateStock('${st.id}', ${st.quantite}, 'sub')" title="Retirer du stock">➖</button>
                         ${isManager ? `<button class="btn-action btn-delete" style="margin-left:10px;" onclick="del('stocks/${st.id}')">🗑️</button>` : ''}
                     </div>
                 `;
@@ -779,7 +781,7 @@
         function filterOrders() {
             const query = document.getElementById('search-orders').value.toLowerCase();
             filteredOrders = ordersHistory.filter(o => {
-                const str = `${o.client}${o.phone} ${o.articles}${o.zone} ${o.status}${o.enCharge}`.toLowerCase();
+                const str = `${o.client} ${o.phone} ${o.articles} ${o.zone} ${o.status} ${o.enCharge}`.toLowerCase();
                 return str.includes(query);
             });
             currentOrderPage = 1; renderHistory();
@@ -803,7 +805,7 @@
                     <td style="color:#aaa;">${order.dateCreation}</td>
                     <td><strong style="color:#fff;">${order.client}</strong><br><span style="color:#ff9800; font-size:0.9em;">📞 ${order.phone}</span></td>
                     <td style="text-align:left; line-height:1.4;"><span style="color:#81c784;">🛒 <strong>Panier :</strong></span> ${order.articles}<br><span style="color:#64b5f6;">📍 <strong>Livraison :</strong></span> ${order.zone} <i>(${order.dateLivraison})</i><br><span style="color:#e57373;">📝 <strong>Notes :</strong></span> ${order.infos}</td>
-                    <td style="color:#4caf50; font-weight:bold;">${order.total}$</td>
+                    <td style="color:#4caf50; font-weight:bold;">${order.total} $</td>
                     <td><select class="status-select charge-select" onchange="updateField('orders/${order.id}/enCharge', this.value)">${getEmployeOptions(order.enCharge)}</select></td>
                     <td><select class="status-select" onchange="updateField('orders/${order.id}/status', this.value)">${statOpts}</select></td>
                     <td style="text-align:center;"><button class="btn-action btn-delete" onclick="del('orders/${order.id}')">X</button></td>
@@ -815,7 +817,7 @@
         function filterEntOrders() {
             const query = document.getElementById('search-ent-orders').value.toLowerCase();
             filteredEntOrders = ordersEntHistory.filter(o => {
-                const str = `${o.client} ${o.phone}${o.articles} ${o.status}${o.enCharge}`.toLowerCase();
+                const str = `${o.client} ${o.phone} ${o.articles} ${o.status} ${o.enCharge}`.toLowerCase();
                 return str.includes(query);
             });
             currentEntOrderPage = 1; renderEntHistory();
@@ -842,7 +844,7 @@
                     <td style="color:#aaa;">${order.dateCreation}</td>
                     <td><strong style="color:#ce93d8;">${entName}</strong><br><span style="color:#aaa; font-size:0.8em;">👤 ${contact}</span><br><span style="color:#ff9800; font-size:0.8em;">📞 ${order.phone}</span></td>
                     <td style="text-align:left; line-height:1.4;"><span style="color:#81c784;">🛒 <strong>Panier :</strong></span> ${order.articles}<br><span style="color:#64b5f6;">🗓️ <strong>Date prévue :</strong></span> ${order.dateLivraison}<br><span style="color:#e57373;">📝 <strong>Notes :</strong></span> ${order.infos}</td>
-                    <td style="color:#ab47bc; font-weight:bold;">${order.total}$</td>
+                    <td style="color:#ab47bc; font-weight:bold;">${order.total} $</td>
                     <td><select class="status-select charge-select" style="border-color:#ce93d8;" onchange="updateField('orders/${order.id}/enCharge', this.value)">${getEmployeOptions(order.enCharge)}</select></td>
                     <td><select class="status-select" style="border-color:#ce93d8;" onchange="updateField('orders/${order.id}/status', this.value)">${statOpts}</select></td>
                     <td style="text-align:center;"><button class="btn-action btn-delete" onclick="del('orders/${order.id}')">X</button></td>
@@ -860,7 +862,7 @@
 
         function filterCandidatures() { 
             const query = document.getElementById('search-cands').value.toLowerCase(); 
-            filteredCandidatures = candidaturesHistory.filter(c => { return `${c.prenom}${c.nom} ${c.experience}${c.status}`.toLowerCase().includes(query); }); 
+            filteredCandidatures = candidaturesHistory.filter(c => { return `${c.prenom} ${c.nom} ${c.experience} ${c.status}`.toLowerCase().includes(query); }); 
             currentCandPage = 1; renderCandidatures(); 
         }
 
@@ -876,13 +878,70 @@
             const startIndex = (currentCandPage - 1) * perPage; const endIndex = startIndex + perPage;
             filteredCandidatures.slice(startIndex, endIndex).forEach(cand => {
                 let rowClass = ""; if(cand.status === "accepté") { rowClass="cand-accepted"; } else if(cand.status === "refusé") { rowClass="cand-rejected"; }
-                
-                // --- MODIFICATION ICI : On intègre l'ID et les dispos ---
-                let idText = cand.idJoueur ? `<br><span style="color:#64b5f6;">🆔 ID: ${cand.idJoueur}</span>` : '';
-                let dispoText = cand.dispo ? `<br><span style="color:#b3e5fc;"><i>Dispo:</i> ${cand.dispo}</span>` : '';
-                
                 tbody.innerHTML += `
                 <tr class="${rowClass}">
                     <td style="color:#aaa;">${cand.dateCreation}</td>
-                    <td><strong style="color:#fff; font-size:1.1em;">${cand.prenom}${cand.nom}</strong></td>
-                    <td>🎂 ${cand.age} ans<br><span style="color:#ff9800;">📞 ${cand.
+                    <td><strong style="color:#fff; font-size:1.1em;">${cand.prenom} ${cand.nom}</strong></td>
+                    <td>🎂 ${cand.age} ans<br><span style="color:#ff9800;">📞 ${cand.phone}</span></td>
+                    <td style="text-align:left; line-height:1.4;"><span style="color:#ddd;"><i>Exp:</i> "${cand.experience}"</span><br><br><span style="color:#b3e5fc;"><i>Mot:</i> "${cand.motivation}"</span></td>
+                    <td style="text-align:center; vertical-align:middle;">
+                        <button class="btn-icon-round ${cand.appreciation ? 'has-notes' : ''}" onclick="document.getElementById('app-${cand.id}').style.display = document.getElementById('app-${cand.id}').style.display === 'none' ? 'block' : 'none'">
+                            ${cand.appreciation ? '📝' : '➕'}
+                        </button>
+                        <div id="app-${cand.id}" style="display:none; margin-top:10px;">
+                            <textarea id="txt-${cand.id}" class="appreciation-input" placeholder="Notes d'entretien...">${cand.appreciation || ''}</textarea>
+                            <button class="btn btn-blue btn-small" style="width:100%;" onclick="updateField('candidatures/${cand.id}/appreciation', document.getElementById('txt-${cand.id}').value); document.getElementById('app-${cand.id}').style.display='none';">Sauver</button>
+                        </div>
+                    </td>
+                    <td style="text-align:center; white-space:nowrap;">
+                        <button class="btn-action btn-accept" onclick="updateField('candidatures/${cand.id}/status', 'accepté')" title="Accepter">✅</button>
+                        <button class="btn-action btn-reject" onclick="updateField('candidatures/${cand.id}/status', 'refusé')" title="Refuser">❌</button>
+                        <button class="btn-action btn-delete" onclick="del('candidatures/${cand.id}')" title="Supprimer">🗑️</button>
+                    </td>
+                </tr>`;
+            });
+        }
+
+        // --- LOGS ---
+        function syncLogs() { 
+            db.ref('logs').orderByChild('timestamp').on('value', (snapshot) => { 
+                logsHistory = []; snapshot.forEach(log => { logsHistory.unshift({ id: log.key, ...log.val() }); }); filterLogs(); 
+            }); 
+        }
+
+        function filterLogs() { 
+            const query = document.getElementById('search-logs').value.toLowerCase(); 
+            filteredLogs = logsHistory.filter(l => { return `${l.employe} ${l.date} ${l.grade}`.toLowerCase().includes(query); }); 
+            currentLogPage = 1; renderLogs(); 
+        }
+
+        function changeLogPage(delta) { currentLogPage += delta; renderLogs(); }
+        function goToLogPage() { currentLogPage = parseInt(document.getElementById('log-page-input').value) || 1; renderLogs(); }
+
+        function renderLogs() {
+            const tbody = document.getElementById('logs-body'); tbody.innerHTML = '';
+            const totalPages = Math.max(1, Math.ceil(filteredLogs.length / perPage));
+            if(currentLogPage < 1) currentLogPage = 1; if(currentLogPage > totalPages) currentLogPage = totalPages;
+            document.getElementById('log-total-pages').innerText = totalPages; document.getElementById('log-page-input').value = currentLogPage;
+            document.getElementById('th-log-action').style.display = currentAccountId === 'admin' ? 'table-cell' : 'none';
+            
+            const startIndex = (currentLogPage - 1) * perPage; const endIndex = startIndex + perPage;
+            filteredLogs.slice(startIndex, endIndex).forEach(log => {
+                let actionTd = currentAccountId === "admin" ? `<td style="text-align:center;"><button class="btn-action btn-delete" onclick="del('logs/${log.id}')">🗑️</button></td>` : '';
+                const gradeBadge = log.grade ? ` <span style="color:#ff9800; font-size:0.85em;">(${log.grade})</span>` : '';
+                tbody.innerHTML += `<tr><td style="color:#aaa;">${log.date}</td><td><strong style="color:#64b5f6;">${log.employe}</strong>${gradeBadge}</td>${actionTd}</tr>`;
+            });
+        }
+
+        function updateClock() {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            const timeStr = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            const clockEl = document.getElementById("real-time-display");
+            if(clockEl) clockEl.innerText = dateStr + " - " + timeStr;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+    </script>
+</body>
+</html>
