@@ -236,8 +236,8 @@
                         <div class="row-inputs">
                             <select id="delivery-zone" class="info-input" style="width: 70%;" onchange="calculateTotal()">
                                 <option value="0">Paleto (0$)</option>
-                                <option value="150">Nord (150$)</option>
-                                <option value="300">Sud  (300$)</option>
+                                <option value="150">Nord (Sandy et alentours) (150$)</option>
+                                <option value="300">Sud (À Partir Du Péage) (300$)</option>
                             </select>
                             <input type="text" id="delivery-postal" class="info-input" placeholder="Code Postal" style="width: 30%;">
                         </div>
@@ -334,8 +334,9 @@
                     </div>
                     <input type="text" id="cv-iban" class="info-input" placeholder="💳 IBAN" style="border-color: #1976d2; margin-bottom: 15px;">
                     
-                    <h3 class="cv-section-title" style="margin-top:25px;">🏢 Demande de Poste</h3>
-                    <input type="text" id="cv-rank" class="info-input" value="Pompiste / Epicier" disabled title="Ce grade est défini par défaut pour les nouvelles recrues.">
+                    <h3 class="cv-section-title" style="margin-top:25px;">🏢 Demande de Poste & Disponibilités</h3>
+                    <input type="text" id="cv-rank" class="info-input" value="Pompiste / Epicier" disabled title="Ce grade est défini par défaut pour les nouvelles recrues." style="margin-bottom: 10px;">
+                    <input type="text" id="cv-dispo" class="info-input" placeholder="🕒 Vos horaires de disponibilité en ville" style="border-color: #1976d2; margin-bottom: 15px;">
                 </div>
 
                 <div>
@@ -731,10 +732,12 @@
             const phone = document.getElementById("cv-phone").value.trim();
             const email = document.getElementById("cv-email").value.trim() || "Non renseigné";
             const iban = document.getElementById("cv-iban").value.trim();
+            const dispo = document.getElementById("cv-dispo").value.trim(); // Nouveau champ
             const experience = document.getElementById("cv-experience").value.trim();
             const motivation = document.getElementById("cv-motivation").value.trim();
 
-            if(!prenom || !nom || !age || !charId || !phone || !iban || !experience || !motivation) {
+            // Ajout du champ dispo dans la vérification
+            if(!prenom || !nom || !age || !charId || !phone || !iban || !experience || !motivation || !dispo) {
                 return showToast("Veuillez remplir tous les champs obligatoires !", "error");
             }
             if(!currentIDCardBase64) {
@@ -751,6 +754,7 @@
                 email: email,
                 iban: iban,
                 poste: "Pompiste / Epicier",
+                dispo: dispo, // Ajout des disponibilités au dossier Firebase
                 experience: experience,
                 motivation: motivation,
                 idCard: currentIDCardBase64, 
@@ -771,6 +775,7 @@
                     document.getElementById("cv-phone").value = "";
                     document.getElementById("cv-email").value = "";
                     document.getElementById("cv-iban").value = "";
+                    document.getElementById("cv-dispo").value = ""; // Remise à zéro
                     document.getElementById("cv-experience").value = "";
                     document.getElementById("cv-motivation").value = "";
                     
