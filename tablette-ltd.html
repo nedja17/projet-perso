@@ -140,6 +140,7 @@
         .btn-red { background: linear-gradient(45deg, #d32f2f, #b71c1c); color: white; }
         .btn-blue { background: linear-gradient(45deg, #1976d2, #1565c0); color: white; }
         .btn-green { background: linear-gradient(45deg, #43a047, #2e7d32); color: white; }
+        .btn-purple { background: linear-gradient(45deg, #8e24aa, #6a1b9a); color: white; }
         .btn-small { width: auto; padding: 8px 12px; margin-top: 0; font-size: 0.9em; }
         
         .btn-action { cursor: pointer; padding: 4px 6px; border-radius: 4px; border: none; margin: 2px; font-size: 0.9em; transition: 0.2s; vertical-align: middle; font-weight:bold; }
@@ -156,8 +157,6 @@
         #stocks-screen .history-table th { background-color: rgba(141, 110, 99, 0.2); color: #8d6e63; font-weight: bold; }
         #candidatures-screen .history-table th { background-color: rgba(25, 118, 210, 0.2); color: #64b5f6; font-weight: bold; }
         #logs-screen .history-table th { background-color: rgba(100, 181, 246, 0.2); color: #64b5f6; font-weight: bold; }
-        
-        .status-select { background-color: #1a1a1a; color: white; border: 1px solid #4caf50; padding: 8px; border-radius: 4px; width: 100%; font-size: 0.9em; }
 
         .pagination-container { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 15px; color: #ccc; }
         .page-input { width: 60px; padding: 5px; background-color: rgba(255, 255, 255, 0.1); border: 1px solid #ff9800; color: white; border-radius: 4px; text-align: center; font-weight: bold; font-family: 'Roboto Slab', serif; }
@@ -166,10 +165,10 @@
         .progress-bar-bg { background-color: rgba(0,0,0,0.6); border-radius: 6px; width: 100%; height: 22px; overflow: hidden; border: 1px solid #444; position: relative; box-shadow: inset 0 2px 4px rgba(0,0,0,0.8); }
         .progress-bar-text { position: absolute; width: 100%; text-align: center; line-height: 22px; font-size: 0.85em; font-weight: bold; color: white; top: 0; left: 0; text-shadow: 1px 1px 2px #000; }
 
-        /* CV NOTES & DOSSIERS */
+        /* BADGES STATUS & CVS */
         .cand-accepted { background-color: rgba(76, 175, 80, 0.15) !important; border-left: 5px solid #4caf50; }
         .cand-rejected { background-color: rgba(211, 47, 47, 0.15) !important; border-left: 5px solid #d32f2f; }
-        .status-badge { padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 0.85em; display: inline-block; color: white; }
+        .status-badge { padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 0.85em; display: inline-block; color: white; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
 
         /* BADGES CATEGORIES STOCKS */
         .badge-cat { padding: 4px 8px; border-radius: 4px; font-size:0.85em; font-weight:bold; display: inline-block; }
@@ -260,17 +259,14 @@
             <!-- Suivi Civils -->
             <div id="history-screen">
                 <h1 style="color: #4caf50; font-size: 2.2em; margin-bottom: 0;">Commandes Civils</h1>
-                <input type="text" id="search-orders" class="info-input" placeholder="🔍 Rechercher (Client, Statut, Zone...)" onkeyup="filterOrders()" style="border-color: #4caf50; margin-top: 20px;">
+                <input type="text" id="search-orders" class="info-input" placeholder="🔍 Rechercher (Nom, Prénom, Tél...)" onkeyup="filterOrders()" style="border-color: #4caf50; margin-top: 20px;">
                 <table class="history-table">
                     <thead>
                         <tr>
-                            <th style="width:10%;">Date</th>
-                            <th style="width:15%;">Client</th>
-                            <th style="width:30%;">Détails de la commande</th>
-                            <th style="width:10%;">Total</th>
-                            <th style="width:15%;">Assigné à</th>
-                            <th style="width:15%;">Statut</th>
-                            <th style="width:5%;">Act</th>
+                            <th style="width:15%;">Date</th>
+                            <th style="width:30%;">Client</th>
+                            <th style="width:35%; text-align:center;">Statut & Assignation</th>
+                            <th style="width:20%; text-align:center;">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="history-body"></tbody>
@@ -285,17 +281,14 @@
             <!-- Suivi Pros -->
             <div id="history-ent-screen">
                 <h1 style="color: #ce93d8; font-size: 2.2em; margin-bottom: 0;">Commandes Pros</h1>
-                <input type="text" id="search-ent-orders" class="info-input" placeholder="🔍 Rechercher (Entreprise, Statut...)" onkeyup="filterEntOrders()" style="border-color: #9c27b0; margin-top: 20px;">
+                <input type="text" id="search-ent-orders" class="info-input" placeholder="🔍 Rechercher (Entreprise, Contact, Tél...)" onkeyup="filterEntOrders()" style="border-color: #9c27b0; margin-top: 20px;">
                 <table class="history-table">
                     <thead>
                         <tr>
-                            <th style="width:10%;">Date</th>
-                            <th style="width:15%;">Entreprise</th>
-                            <th style="width:30%;">Détails de la commande</th>
-                            <th style="width:10%;">Total</th>
-                            <th style="width:15%;">Assigné à</th>
-                            <th style="width:15%;">Statut</th>
-                            <th style="width:5%;">Act</th>
+                            <th style="width:15%;">Date</th>
+                            <th style="width:30%;">Entreprise</th>
+                            <th style="width:35%; text-align:center;">Statut & Assignation</th>
+                            <th style="width:20%; text-align:center;">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="history-ent-body"></tbody>
@@ -329,12 +322,11 @@
                 </table>
             </div>
 
-            <!-- SUIVI STOCKS INVENTAIRE (DESIGN COMPACT) -->
+            <!-- SUIVI STOCKS INVENTAIRE -->
             <div id="stocks-screen">
                 <h1 style="color: #8d6e63; font-size: 2.2em; margin-bottom: 0;">Gestion des Stocks 📦</h1>
                 <p style="font-size: 0.9em; color: #aaa; margin-top: 5px;">Inventaire de la réserve et du catalogue de la supérette.</p>
 
-                <!-- Formulaire ajout Produit (Manager uniquement) -->
                 <div id="manager-add-stock" class="manager-form" style="border-color: #8d6e63; flex-wrap: wrap;">
                     <strong style="color:#8d6e63; width: 100%; margin-bottom: 10px;">Outil Direction : Ajouter un produit au Catalogue</strong>
                     
@@ -353,7 +345,6 @@
                     <textarea id="new-stock-details" class="info-input" placeholder="Détails du pack (un élément par ligne)&#10;Exemple:&#10;300 Eau&#10;100 Fertilisant" style="width: 100%; margin-top: 10px; border-color:#8d6e63; display: none; height: 75px; text-align: left;"></textarea>
                 </div>
 
-                <!-- Filtres et Recherche -->
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
                     <input type="text" id="search-stocks" class="info-input" placeholder="🔍 Rechercher un produit..." onkeyup="filterStocks()" style="border-color: #8d6e63; width: 35%; margin: 0;">
                     
@@ -365,7 +356,6 @@
                     </div>
                 </div>
 
-                <!-- TABLE DES STOCKS NOUVELLE VERSION -->
                 <table class="history-table">
                     <thead>
                         <tr>
@@ -454,7 +444,64 @@
         </div>
     </div>
 
-    <!-- MODALE : LECTURE DU DOSSIER COMPLET -->
+    <!-- MODALE : DOSSIER DE COMMANDE (CIVIL/PRO) -->
+    <div id="order-modal" class="modal-overlay">
+        <div class="modal-box" style="width: 850px; text-align: left; background: rgba(30, 30, 30, 0.98);" id="order-modal-box">
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #4caf50; padding-bottom: 15px; margin-bottom: 20px;" id="order-modal-header">
+                <h2 style="margin: 0; font-size: 1.8em; color: #4caf50;" id="order-modal-title">Détails de la commande</h2>
+                <span id="order-modal-status-badge" class="status-badge">STATUT</span>
+            </div>
+
+            <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 20px;">
+                <div style="flex: 1; min-width: 300px; background: rgba(0,0,0,0.3); padding: 20px; border-radius: 8px; border: 1px solid #444; display: flex; flex-direction: column;">
+                    <h3 style="color:#ff9800; margin-top:0; border-bottom: 1px dashed #555; padding-bottom: 10px;">👤 Informations Client</h3>
+                    <p style="margin: 5px 0;"><strong>Nom :</strong> <span id="order-modal-client" style="color:#e0e0e0;"></span></p>
+                    <p style="margin: 5px 0;"><strong>📞 Tél :</strong> <span id="order-modal-phone" style="color:#e0e0e0;"></span></p>
+                    
+                    <h3 style="color:#64b5f6; margin-top:15px; border-bottom: 1px dashed #555; padding-bottom: 10px;">📍 Livraison</h3>
+                    <div id="order-modal-zone-container" style="line-height: 1.6; color:#e0e0e0;"></div>
+                    
+                    <p id="order-modal-tracking-container" style="margin-top: 15px; display: none;">
+                        <strong>🔑 Code de suivi :</strong> <span id="order-modal-tracking" style="color:#ff9800; font-weight:bold; font-family:monospace; font-size:1.1em; letter-spacing:1px;"></span>
+                    </p>
+                </div>
+
+                <div style="flex: 1; min-width: 300px; background: rgba(0,0,0,0.3); padding: 20px; border-radius: 8px; border: 1px solid #444; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <h3 style="color:#81c784; margin-top:0; border-bottom: 1px dashed #555; padding-bottom: 10px;">🛒 Contenu du Panier</h3>
+                        <div id="order-modal-articles" style="line-height: 1.6; color:#ccc; margin-left: 15px;"></div>
+                    </div>
+                    <div>
+                        <h2 id="order-modal-total" style="color:#4caf50; text-align:right; border-top:1px solid #555; padding-top:15px; margin-bottom:0; font-size: 1.8em;"></h2>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border: 1px solid #444; margin-bottom: 25px;">
+                <h3 style="color:#e57373; margin-top:0; font-size: 1.1em;">📝 Notes / Instructions du client</h3>
+                <p id="order-modal-notes" style="font-style:italic; color:#aaa; margin:0; line-height: 1.4;"></p>
+            </div>
+            
+            <div style="display:flex; gap:15px; align-items:center; background: rgba(0,0,0,0.5); padding: 20px; border-radius: 8px; border: 1px solid #555;" id="order-modal-action-box">
+                <div style="flex:1;">
+                    <label style="color:#ccc; font-weight:bold; display:block; margin-bottom:8px;">🙋‍♂️ Assigner cette commande à :</label>
+                    <select id="order-modal-assignee" class="info-input" style="margin-bottom: 0;" onchange="if(currentEditingOrder) updateField('orders/' + currentEditingOrder.id + '/enCharge', this.value)"></select>
+                </div>
+                <div style="flex:1;">
+                    <label style="color:#ccc; font-weight:bold; display:block; margin-bottom:8px;">🚦 Modifier le statut :</label>
+                    <select id="order-modal-status-select" class="info-input" style="margin-bottom: 0;" onchange="if(currentEditingOrder) updateField('orders/' + currentEditingOrder.id + '/status', this.value)"></select>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 15px; margin-top: 25px; justify-content: flex-end;">
+                <button class="btn btn-green" id="btn-save-order" style="width: auto; padding: 12px 25px;" onclick="saveOrderChanges()">💾 SAUVEGARDER LES MODIFICATIONS</button>
+                <button class="btn" style="background: #555; width: auto; padding: 12px 25px; color: white;" onclick="closeOrderModal()">FERMER</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODALE : LECTURE DU DOSSIER COMPLET (CANDIDATURE) -->
     <div id="dossier-modal" class="modal-overlay">
         <div class="modal-box" style="width: 850px; border-color: #1976d2; text-align: left; background: rgba(30, 30, 30, 0.98);">
             
@@ -475,6 +522,7 @@
                         <p style="margin: 0; color: #ff9800; font-weight: bold; margin-bottom: 10px;">ID en ville : <span id="dossier-charid">--</span></p>
                         <p style="margin: 5px 0;"><b>Âge :</b> <span id="dossier-age"></span> ans</p>
                         <p style="margin: 5px 0;"><b>Poste visé :</b> <span id="dossier-poste" style="color: #64b5f6;"></span></p>
+                        <p style="margin: 5px 0;"><b>Dispos :</b> <span id="dossier-dispo" style="color: #64b5f6;"></span></p>
                     </div>
                     <div style="margin-top: 15px; border-top: 1px dashed #555; padding-top: 15px;">
                         <p style="margin: 5px 0;">📞 <span id="dossier-phone"></span></p>
@@ -819,6 +867,20 @@
                     if (order.type === "Entreprise") { ordersEntHistory.unshift(order); } else { ordersHistory.unshift(order); }
                 });
                 filterOrders(); filterEntOrders();
+                
+                // Mise à jour de la modale en direct
+                if (currentEditingOrder) {
+                    let updated = (currentEditingOrder.type === 'Civil') 
+                        ? ordersHistory.find(o => o.id === currentEditingOrder.id) 
+                        : ordersEntHistory.find(o => o.id === currentEditingOrder.id);
+                        
+                    if (updated) {
+                        currentEditingOrder = updated;
+                        updateModalLiveUI(updated, updated.type === 'Civil' ? 'civil' : 'ent');
+                    } else {
+                        closeOrderModal();
+                    }
+                }
             });
         }
 
@@ -953,7 +1015,6 @@
 
                 let statusHtml = st.quantite > 0 ? `<span style="color:#4caf50; font-weight:bold;">En stock</span>` : `<span style="color:#f44336; font-weight:bold;">⚠️ Rupture</span>`;
                 
-                // NOUVEAU DESIGN DE LA COLONNE "EN RAYON"
                 let qtyDisplay = `
                     <div style="display:flex; justify-content:center; align-items:center; gap:5px;">
                         <input type="number" id="edit-qty-${st.id}" class="info-input" value="${st.quantite}" style="width:80px; padding:6px; margin:0; border-color:#8d6e63; text-align:center; font-weight:bold; color:${st.quantite > 0 ? '#fff' : '#f44336'};">
@@ -1013,7 +1074,6 @@
             showToast("Produit ajouté au catalogue !", "success");
         }
 
-        // NOUVELLE FONCTION DE MISE A JOUR DIRECTE DU STOCK
         function updateStockDirect(id) {
             const inputVal = document.getElementById(`edit-qty-${id}`).value;
             const newQty = parseInt(inputVal);
@@ -1041,10 +1101,10 @@
         }
 
 
-        // --- COMMANDES CIVILS & PROS ---
+        // --- COMMANDES CIVILS & PROS (TABLEAUX EPURÉS, BADGES FIXES) ---
         function filterOrders() {
             const query = document.getElementById('search-orders').value.toLowerCase();
-            filteredOrders = ordersHistory.filter(o => `${o.client} ${o.phone} ${o.articles} ${o.zone} ${o.status} ${o.enCharge}`.toLowerCase().includes(query));
+            filteredOrders = ordersHistory.filter(o => `${o.client} ${o.phone}`.toLowerCase().includes(query));
             currentOrderPage = 1; renderHistory();
         }
         function changeOrderPage(delta) { currentOrderPage += delta; renderHistory(); }
@@ -1058,23 +1118,34 @@
             
             const startIndex = (currentOrderPage - 1) * perPage; const endIndex = startIndex + perPage;
             filteredOrders.slice(startIndex, endIndex).forEach(order => {
-                const statOpts = ["En attente de préparation", "Disponible à la livraison", "Livraison en cours", "Livré"].map(s => `<option value="${s}" ${order.status===s?'selected':''}>${s}</option>`).join('');
+                
+                let statusColor = "#ff9800"; 
+                if(order.status.includes("Livraison") || order.status.includes("Disponible")) statusColor = "#64b5f6"; 
+                if(order.status === "Livré") statusColor = "#4caf50"; 
+                
+                let assigneeDisplay = order.enCharge ? `Assigné à : ${order.enCharge}` : `Non assigné`;
+
                 tbody.innerHTML += `
                 <tr>
                     <td style="color:#aaa;">${order.dateCreation}</td>
-                    <td><strong style="color:#fff;">${order.client}</strong><br><span style="color:#ff9800; font-size:0.9em;">📞 ${order.phone}</span></td>
-                    <td style="text-align:left; line-height:1.4;"><span style="color:#81c784;">🛒 <strong>Panier :</strong></span> ${order.articles}<br><span style="color:#64b5f6;">📍 <strong>Livraison :</strong></span> ${order.zone} <i>(${order.dateLivraison})</i><br><span style="color:#e57373;">📝 <strong>Notes :</strong></span> ${order.infos}</td>
-                    <td style="color:#4caf50; font-weight:bold;">${order.total} $</td>
-                    <td><select class="status-select charge-select" onchange="updateField('orders/${order.id}/enCharge', this.value)">${getEmployeOptions(order.enCharge)}</select></td>
-                    <td><select class="status-select" onchange="updateField('orders/${order.id}/status', this.value)">${statOpts}</select></td>
-                    <td style="text-align:center;"><button class="btn-action btn-delete" onclick="del('orders/${order.id}')">X</button></td>
+                    <td><strong style="color:#fff; font-size:1.1em;">${order.client}</strong><br><span style="color:#ff9800; font-size:0.9em;">📞 ${order.phone}</span></td>
+                    <td style="text-align:center;">
+                        <span class="status-badge" style="background-color:${statusColor}; color:${statusColor === '#ff9800' || statusColor === '#64b5f6' ? '#1a1a1a' : '#fff'};">${order.status}</span><br>
+                        <span style="font-size:0.8em; color:#aaa; margin-top:5px; display:inline-block;">${assigneeDisplay}</span>
+                    </td>
+                    <td style="text-align:center;">
+                        <div style="display: flex; justify-content: center; align-items: center; gap: 10px;">
+                            <button class="btn btn-green btn-small" style="font-size:1em; padding: 8px 15px; margin:0; width: 100px; color:#1a1a1a;" onclick="openOrderModal('${order.id}', 'civil')">📂 Ouvrir</button>
+                            <button class="btn-action btn-delete" style="padding: 8px 12px; font-size:1.1em; margin:0;" onclick="del('orders/${order.id}')" title="Supprimer la commande">🗑️</button>
+                        </div>
+                    </td>
                 </tr>`;
             });
         }
 
         function filterEntOrders() {
             const query = document.getElementById('search-ent-orders').value.toLowerCase();
-            filteredEntOrders = ordersEntHistory.filter(o => `${o.client} ${o.phone} ${o.articles} ${o.status} ${o.enCharge}`.toLowerCase().includes(query));
+            filteredEntOrders = ordersEntHistory.filter(o => `${o.client} ${o.phone}`.toLowerCase().includes(query));
             currentEntOrderPage = 1; renderEntHistory();
         }
         function changeEntOrderPage(delta) { currentEntOrderPage += delta; renderEntHistory(); }
@@ -1088,24 +1159,117 @@
             
             const startIndex = (currentEntOrderPage - 1) * perPage; const endIndex = startIndex + perPage;
             filteredEntOrders.slice(startIndex, endIndex).forEach(order => {
-                const statOpts = ["En attente de préparation", "Disponible à la livraison", "Livraison en cours", "Livré"].map(s => `<option value="${s}" ${order.status===s?'selected':''}>${s}</option>`).join('');
+                
+                let statusColor = "#ff9800"; 
+                if(order.status.includes("Livraison") || order.status.includes("Disponible")) statusColor = "#ce93d8"; 
+                if(order.status === "Livré") statusColor = "#4caf50"; 
+                
                 let entName = order.client; let contact = ""; 
                 if(order.client.includes("(")) { entName = order.client.split(' (')[0]; contact = order.client.split('(')[1].replace(')',''); }
                 
+                let assigneeDisplay = order.enCharge ? `Assigné à : ${order.enCharge}` : `Non assigné`;
+
                 tbody.innerHTML += `
                 <tr>
                     <td style="color:#aaa;">${order.dateCreation}</td>
-                    <td><strong style="color:#ce93d8;">${entName}</strong><br><span style="color:#aaa; font-size:0.8em;">👤 ${contact}</span><br><span style="color:#ff9800; font-size:0.8em;">📞 ${order.phone}</span></td>
-                    <td style="text-align:left; line-height:1.4;"><span style="color:#81c784;">🛒 <strong>Panier :</strong></span> ${order.articles}<br><span style="color:#64b5f6;">🗓️ <strong>Date prévue :</strong></span> ${order.dateLivraison}<br><span style="color:#e57373;">📝 <strong>Notes :</strong></span> ${order.infos}</td>
-                    <td style="color:#ab47bc; font-weight:bold;">${order.total} $</td>
-                    <td><select class="status-select charge-select" style="border-color:#ce93d8;" onchange="updateField('orders/${order.id}/enCharge', this.value)">${getEmployeOptions(order.enCharge)}</select></td>
-                    <td><select class="status-select" style="border-color:#ce93d8;" onchange="updateField('orders/${order.id}/status', this.value)">${statOpts}</select></td>
-                    <td style="text-align:center;"><button class="btn-action btn-delete" onclick="del('orders/${order.id}')">X</button></td>
+                    <td><strong style="color:#ce93d8; font-size:1.1em;">${entName}</strong><br><span style="color:#aaa; font-size:0.8em;">👤 ${contact}</span> - <span style="color:#ff9800; font-size:0.8em;">📞 ${order.phone}</span></td>
+                    <td style="text-align:center;">
+                        <span class="status-badge" style="background-color:${statusColor}; color:${statusColor === '#ff9800' ? '#1a1a1a' : '#fff'};">${order.status}</span><br>
+                        <span style="font-size:0.8em; color:#aaa; margin-top:5px; display:inline-block;">${assigneeDisplay}</span>
+                    </td>
+                    <td style="text-align:center;">
+                        <div style="display: flex; justify-content: center; align-items: center; gap: 10px;">
+                            <button class="btn btn-small" style="background:linear-gradient(45deg, #ff9800, #e68900); color:#1a1a1a; font-size:1em; padding: 8px 15px; margin:0; width: 100px;" onclick="openOrderModal('${order.id}', 'ent')">📂 Ouvrir</button>
+                            <button class="btn-action btn-delete" style="padding: 8px 12px; font-size:1.1em; margin:0;" onclick="del('orders/${order.id}')" title="Supprimer la commande">🗑️</button>
+                        </div>
+                    </td>
                 </tr>`;
             });
         }
 
-        // --- CVS (NOUVEAU DESIGN) ---
+        // --- GESTION DE LA MODALE DES COMMANDES ---
+        let currentEditingOrder = null;
+
+        function openOrderModal(id, type) {
+            let order = (type === 'civil') ? ordersHistory.find(o => o.id === id) : ordersEntHistory.find(o => o.id === id);
+            if(!order) return;
+            currentEditingOrder = order;
+
+            let themeColor = type === 'civil' ? '#4caf50' : '#ce93d8';
+            document.getElementById('order-modal-title').style.color = themeColor;
+            document.getElementById('order-modal-title').innerText = type === 'civil' ? "Détails Commande Civile" : "Détails Commande Pro";
+            document.getElementById('order-modal-box').style.borderColor = themeColor;
+            document.getElementById('order-modal-header').style.borderColor = themeColor;
+            
+            updateModalLiveUI(order, type);
+
+            // Infos Client
+            document.getElementById('order-modal-client').innerText = order.client;
+            document.getElementById('order-modal-phone').innerText = order.phone;
+
+            // Infos Livraison (Code Postal propre)
+            let zoneHtml = "";
+            if (type === 'civil') {
+                let parts = order.zone.split(" - CP: ");
+                zoneHtml += `<p style="margin: 5px 0;">${parts[0]}</p>`;
+                if (parts[1]) zoneHtml += `<p style="margin: 5px 0; color:#64b5f6;">📮 <strong>Code Postal :</strong> ${parts[1]}</p>`;
+            } else {
+                zoneHtml += `<p style="margin: 5px 0;">🏢 Locaux de l'entreprise</p>`;
+            }
+            zoneHtml += `<p style="margin: 5px 0; color:#64b5f6;">📅 <strong>Prévue le :</strong> ${order.dateLivraison}</p>`;
+            document.getElementById('order-modal-zone-container').innerHTML = zoneHtml;
+
+            // Tracking number (Civils uniquement)
+            if (order.trackingNumber) {
+                document.getElementById('order-modal-tracking-container').style.display = 'block';
+                document.getElementById('order-modal-tracking').innerText = order.trackingNumber;
+            } else {
+                document.getElementById('order-modal-tracking-container').style.display = 'none';
+            }
+
+            // Panier
+            let articlesArr = order.articles.split(' | ');
+            let articlesHtml = "<ul>" + articlesArr.map(a => `<li style="margin-bottom:5px;">${a}</li>`).join('') + "</ul>";
+            document.getElementById('order-modal-articles').innerHTML = articlesHtml;
+            document.getElementById('order-modal-total').innerText = order.total + " $";
+
+            // Notes
+            document.getElementById('order-modal-notes').innerText = order.infos;
+
+            document.getElementById('order-modal').style.display = 'flex';
+        }
+
+        // Fonction pour mettre à jour les éléments interactifs de la modale en direct
+        function updateModalLiveUI(order, type) {
+            const statusBadge = document.getElementById('order-modal-status-badge');
+            statusBadge.innerText = order.status.toUpperCase();
+            if(order.status.includes("Livraison") || order.status.includes("Disponible")) {
+                statusBadge.style.backgroundColor = type === 'civil' ? '#64b5f6' : '#ce93d8';
+                statusBadge.style.color = type === 'civil' ? '#1a1a1a' : '#fff';
+            } else if(order.status === "Livré") {
+                statusBadge.style.backgroundColor = '#4caf50';
+                statusBadge.style.color = '#fff';
+            } else {
+                statusBadge.style.backgroundColor = '#ff9800';
+                statusBadge.style.color = '#1a1a1a';
+            }
+
+            document.getElementById('order-modal-assignee').innerHTML = getEmployeOptions(order.enCharge);
+            const statOpts = ["En attente de préparation", "Disponible à la livraison", "Livraison en cours", "Livré"].map(s => `<option value="${s}" ${order.status===s?'selected':''}>${s}</option>`).join('');
+            document.getElementById('order-modal-status-select').innerHTML = statOpts;
+        }
+
+        function closeOrderModal() { 
+            document.getElementById('order-modal').style.display = 'none'; 
+            currentEditingOrder = null; 
+        }
+
+        function saveOrderChanges() {
+            showToast("Modifications enregistrées !", "success");
+            closeOrderModal();
+        }
+
+        // --- CVS ---
         function syncCandidatures() {
             db.ref('candidatures').orderByChild('timestamp').on('value', (snapshot) => { 
                 candidaturesHistory = []; 
@@ -1136,6 +1300,8 @@
             document.getElementById('dossier-exp').innerText = cand.experience;
             document.getElementById('dossier-moti').innerText = cand.motivation;
             document.getElementById('dossier-notes').value = cand.appreciation || "";
+
+            document.getElementById('dossier-dispo').innerText = cand.dispo || "Non précisé";
 
             const statusBadge = document.getElementById('dossier-status');
             statusBadge.innerText = cand.status.toUpperCase();
