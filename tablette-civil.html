@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=1500">    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">    
     <title>LTD Paleto - Commande & CV</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
     
@@ -11,7 +11,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <style>
-        /* --- le disigne global --- */
+        /* --- le design global --- */
         *, *::before, *::after { box-sizing: border-box; }
 
         body {
@@ -23,7 +23,7 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            padding: 20px;
+            padding: 15px;
             background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('ltd.png');
             background-size: cover;
             background-position: center;
@@ -35,59 +35,58 @@
         .container {
             position: relative;
             background-color: rgba(45, 45, 45, 0.95);
-            padding: 40px;
+            padding: 25px;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
-            width: 98%; 
+            width: 100%; 
             max-width: 1500px; 
             text-align: center;
             border: 1px solid #555;
             backdrop-filter: blur(5px);
-            margin: 20px auto;
+            margin: 10px auto;
         }
 
         .top-left-clock {
-            position: absolute;
-            top: 25px;
-            left: 30px;
+            position: relative;
+            margin-bottom: 20px;
             background-color: rgba(26, 26, 26, 0.9);
             border: 1px solid #64b5f6;
-            padding: 10px 20px;
+            padding: 10px 15px;
             border-radius: 8px;
-            font-size: 0.95em;
+            font-size: 0.9em;
             box-shadow: 0 4px 6px rgba(0,0,0,0.3);
             text-align: center;
             line-height: 1.5;
             color: #e0e0e0;
-            min-width: 230px; 
+            display: inline-block;
             font-variant-numeric: tabular-nums; 
         }
         .top-left-clock span { color: #64b5f6; font-weight: bold; }
 
-        h1 { color: #ff9800; letter-spacing: 1px; margin-bottom: 25px; font-size: 2.5em; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); }
-        h3 { color: #ff9800; border-bottom: 2px solid #ff9800; padding-bottom: 10px; margin-top: 30px; font-size: 1.5em; text-align: left; }
+        h1 { color: #ff9800; letter-spacing: 1px; margin-bottom: 20px; font-size: 2.2em; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); }
+        h3 { color: #ff9800; border-bottom: 2px solid #ff9800; padding-bottom: 10px; margin-top: 25px; font-size: 1.3em; text-align: left; }
         h3.pack-title { color: #4caf50; border-bottom: 2px solid #4caf50; margin-top: 10px; }
-        p { font-size: 1.1em; margin-bottom: 20px; }
+        p { font-size: 1em; margin-bottom: 15px; }
 
         /* --- NAVBAR (Onglets) --- */
         .navbar {
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 10px;
             margin-top: 10px;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             border-bottom: 1px solid #555;
-            padding-bottom: 20px;
+            padding-bottom: 15px;
         }
         .nav-btn {
-            padding: 12px 25px;
+            padding: 10px 20px;
             background-color: rgba(30, 30, 30, 0.8);
             border: 2px solid transparent;
             color: white;
             font-family: 'Roboto Slab', serif;
             font-weight: bold;
-            font-size: 1.1em;
+            font-size: 1em;
             border-radius: 5px;
             cursor: pointer;
             transition: 0.2s;
@@ -103,14 +102,14 @@
         #btn-cv-modal { border-color: #1976d2; }
         #btn-cv-modal:hover { background-color: #1976d2; color: #1a1a1a; }
 
-        /* --- la grille des produits --- */
-        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; margin-top: 20px; margin-bottom: 20px; }
+        /* --- GRILLE PRODUITS --- */
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; margin-top: 15px; margin-bottom: 15px; }
         .product-card { background-color: rgba(30, 30, 30, 0.8); border: 1px solid #ff9800; border-radius: 10px; padding: 15px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; transition: 0.2s; position: relative; }
         .product-card.pack-card { border: 1px solid #4caf50; }
         .product-card.pack-card .prod-name { color: #81c784; }
-        .product-card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(255, 152, 0, 0.2); background-color: rgba(40, 40, 40, 0.9); }
+        .product-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(255, 152, 0, 0.2); background-color: rgba(40, 40, 40, 0.9); }
         
-        .prod-name { font-size: 1.05em; font-weight: bold; color: #ff9800; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; text-align: center; line-height: 1.2; }
+        .prod-name { font-size: 1em; font-weight: bold; color: #ff9800; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; text-align: center; line-height: 1.2; }
         
         .pack-details { font-size: 0.85em; color: #ccc; margin-bottom: 15px; text-align: left; width: 100%; padding: 0 10px; }
         .pack-details ul { margin: 5px 0; padding-left: 20px; color: #e0e0e0; }
@@ -120,35 +119,41 @@
         .prod-subtotal { margin-top: 10px; font-weight: bold; color: #4caf50; }
 
         /* --- Badge de stock --- */
-        .stock-badge { margin-bottom: 12px; font-size: 0.85em; font-weight: bold; padding: 4px 8px; border-radius: 4px; }
+        .stock-badge { margin-bottom: 10px; font-size: 0.8em; font-weight: bold; padding: 4px 8px; border-radius: 4px; }
         .stock-ok { background-color: rgba(76, 175, 80, 0.2); color: #81c784; border: 1px solid #4caf50; }
         .stock-out { background-color: rgba(244, 67, 54, 0.2); color: #e57373; border: 1px solid #f44336; }
 
-        /* --- inputs --- */
+        /* --- INPUTS --- */
         .info-input, select.info-input { width: 100%; padding: 12px; background-color: rgba(26, 26, 26, 0.8); border: 1px solid #555; color: white; border-radius: 8px; text-align: center; font-family: 'Roboto Slab', serif; font-size: 1em; transition: border-color 0.2s; }
         .info-input:focus { border-color: #ff9800; outline: none; }
         select.info-input option { background-color: #1a1a1a; color: white; }
         .info-input:disabled { background-color: rgba(0,0,0,0.5); cursor: not-allowed; color: #888; border-color: #555 !important; }
         
-        .qty-input { width: 80px; padding: 8px; background-color: rgba(255, 255, 255, 0.1); border: 1px solid #555; color: white; border-radius: 5px; text-align: center; font-weight: bold; font-family: 'Roboto Slab', serif; font-size: 1.2em; transition: 0.2s; }
+        .qty-input { width: 80px; padding: 8px; background-color: rgba(255, 255, 255, 0.1); border: 1px solid #555; color: white; border-radius: 5px; text-align: center; font-weight: bold; font-family: 'Roboto Slab', serif; font-size: 1.2em; }
         .qty-input:disabled { background-color: rgba(244, 67, 54, 0.1); border-color: #f44336; cursor: not-allowed; opacity: 0.5; }
-        textarea.info-input { height: 80px; text-align: left; resize: vertical; }
+        textarea.info-input { height: 70px; text-align: left; resize: vertical; }
 
-        /* --- NOUVEAU DESIGN DE LA ZONE DE LIVRAISON --- */
-        .delivery-info-section { margin-top: 30px; text-align: left; background-color: rgba(30, 30, 30, 0.6); padding: 25px; border-radius: 12px; border: 1px solid #444; }
-        .delivery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
-        @media (max-width: 800px) { .delivery-grid { grid-template-columns: 1fr; } }
+        /* --- ZONE DE LIVRAISON RESPONSIVE --- */
+        .delivery-info-section { margin-top: 25px; text-align: left; background-color: rgba(30, 30, 30, 0.6); padding: 20px; border-radius: 12px; border: 1px solid #444; }
+        .delivery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
         
-        .delivery-card { background: rgba(0,0,0,0.4); padding: 20px; border-radius: 10px; }
-        .delivery-card-title { margin-top: 0; margin-bottom: 15px; font-size: 1.1em; text-transform: uppercase; letter-spacing: 1px; }
+        /* Adaptation mobile automatique pour passer de 2 colonnes à 1 colonne */
+        @media (max-width: 900px) { 
+            .delivery-grid { grid-template-columns: 1fr; } 
+            .row-inputs { flex-direction: column; }
+            .row-inputs input, .row-inputs select { width: 100% !important; }
+        }
+        
+        .delivery-card { background: rgba(0,0,0,0.4); padding: 15px; border-radius: 10px; }
+        .delivery-card-title { margin-top: 0; margin-bottom: 12px; font-size: 1em; text-transform: uppercase; letter-spacing: 1px; }
         .row-inputs { display: flex; gap: 10px; margin-bottom: 12px; }
 
-        /* --- barre de total --- */
-        .total-bar { background-color: rgba(51, 51, 51, 0.9); padding: 15px; border-radius: 8px; margin-top: 20px; border: 1px solid #4caf50; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
-        .total-label { font-size: 1.2em; font-weight: bold; color: white; }
-        .total-amount { font-size: 1.8em; font-weight: bold; color: #4caf50; }
+        /* --- BARRE DE TOTAL --- */
+        .total-bar { background-color: rgba(51, 51, 51, 0.9); padding: 15px; border-radius: 8px; margin-top: 20px; border: 1px solid #4caf50; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+        .total-label { font-size: 1.1em; font-weight: bold; color: white; }
+        .total-amount { font-size: 1.6em; font-weight: bold; color: #4caf50; }
 
-        /* --- boutons --- */
+        /* --- BOUTONS --- */
         .btn { width: 100%; padding: 15px; background: linear-gradient(45deg, #ff9800, #e68900); border: none; color: #1a1a1a; font-weight: bold; cursor: pointer; border-radius: 8px; font-size: 1.1em; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); transition: 0.2s; }
         .btn:hover { filter: brightness(1.1); transform: scale(1.02); }
         .btn-green { background: linear-gradient(45deg, #43a047, #2e7d32); color: white; }
@@ -157,31 +162,30 @@
         .btn-purple { background: linear-gradient(45deg, #8e24aa, #6a1b9a); color: white; }
 
         #tracking-screen, #success-screen { display: none; }
-        .success-icon { font-size: 4em; margin-bottom: 10px; display: block; color: #43a047; }
+        .success-icon { font-size: 3.5em; margin-bottom: 10px; display: block; color: #43a047; }
 
-        /* --- FENÊTRE MODALE CV & RECAPITULATIF --- */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(5px); overflow-y: auto; padding: 20px; }
-        .modal-box { background: rgba(30, 30, 30, 0.95); padding: 30px; border-radius: 12px; border: 2px solid #1976d2; width: 900px; max-width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.9); position: relative; margin: auto; }
-        .cv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; text-align: left; }
+        /* --- FENÊTRES MODALES --- */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(5px); overflow-y: auto; padding: 15px; }
+        .modal-box { background: rgba(30, 30, 30, 0.95); padding: 20px; border-radius: 12px; border: 2px solid #1976d2; width: 850px; max-width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.9); position: relative; margin: auto; }
+        .cv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; text-align: left; }
         @media (max-width: 800px) { .cv-grid { grid-template-columns: 1fr; } }
-        .cv-section-title { color: #1976d2; border-bottom: 1px solid #444; padding-bottom: 5px; margin-top: 0; font-size: 1.1em; text-transform: uppercase; margin-bottom: 15px;}
-        .paste-zone { border: 2px dashed #1976d2; background-color: rgba(0,0,0,0.4); border-radius: 8px; padding: 20px; min-height: 120px; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; transition: 0.2s; text-align: center; }
+        .cv-section-title { color: #1976d2; border-bottom: 1px solid #444; padding-bottom: 5px; margin-top: 0; font-size: 1em; text-transform: uppercase; margin-bottom: 12px;}
+        .paste-zone { border: 2px dashed #1976d2; background-color: rgba(0,0,0,0.4); border-radius: 8px; padding: 15px; min-height: 110px; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; transition: 0.2s; text-align: center; }
         .paste-zone:hover { background-color: rgba(25, 118, 210, 0.2); }
-        .paste-preview { max-width: 100%; max-height: 150px; display: none; border-radius: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        .paste-preview { max-width: 100%; max-height: 130px; display: none; border-radius: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
 
-        /* Style spécifique pour le récapitulatif */
-        .recap-content { text-align: left; background: rgba(0,0,0,0.3); padding: 20px; border-radius: 8px; border: 1px solid #444; margin-bottom: 20px; color: #e0e0e0; font-size: 1.1em; line-height: 1.6; }
-        .recap-content p { margin: 5px 0; }
-        .recap-content ul { margin: 5px 0 15px 0; padding-left: 20px; color: #81c784; }
-        .recap-content hr { border-color: #555; margin: 15px 0; }
+        .recap-content { text-align: left; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border: 1px solid #444; margin-bottom: 15px; color: #e0e0e0; font-size: 1em; line-height: 1.5; }
+        .recap-content p { margin: 4px 0; }
+        .recap-content ul { margin: 4px 0 10px 0; padding-left: 18px; color: #81c784; }
+        .recap-content hr { border-color: #555; margin: 10px 0; }
 
         /* --- NOTIFICATIONS TOAST --- */
-        #toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
-        .toast { min-width: 250px; padding: 15px 20px; border-radius: 8px; color: #fff; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.5); animation: slideInRight 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) forwards, fadeOut 0.4s ease 3.6s forwards; font-family: 'Roboto Slab', serif; display: flex; align-items: center; gap: 10px; }
+        #toast-container { position: fixed; bottom: 15px; right: 15px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; max-width: 90%; }
+        .toast { padding: 12px 18px; border-radius: 8px; color: #fff; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.5); animation: slideInRight 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) forwards, fadeOut 0.4s ease 3.6s forwards; font-family: 'Roboto Slab', serif; display: flex; align-items: center; gap: 10px; font-size: 0.9em; }
         .toast.error { background: linear-gradient(45deg, #d32f2f, #b71c1c); border-left: 5px solid #ff5252; }
         .toast.success { background: linear-gradient(45deg, #43a047, #2e7d32); border-left: 5px solid #81c784; }
         @keyframes slideInRight { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; margin-bottom: -60px; } }
+        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; margin-bottom: -50px; } }
     </style>
 </head>
 <body>
@@ -204,7 +208,7 @@
             <button class="nav-btn" style="background-color: #d32f2f; border-color: #b71c1c;" onclick="location.reload()">❌ Quitter</button>
         </div>
 
-        <!-- Dashboard Commande (S'affiche par défaut) -->
+        <!-- Dashboard Commande -->
         <div id="dashboard">
             <h3 class="pack-title">NOS PACKS (LIVRAISON UNIQUEMENT)</h3>
             <div id="product-grid-pack" class="product-grid">
@@ -216,8 +220,9 @@
                 <span class="total-amount" id="grand-total">0.00 $</span>
             </div>
             
+            <!-- FORMULAIRE LIVRAISON -->
             <div class="delivery-info-section">
-                <h3 style="margin-top: 0; color: #fff; border-bottom: 1px solid #555; padding-bottom: 10px; font-size: 1.3em;">INFORMATIONS DE LIVRAISON</h3>
+                <h3 style="margin-top: 0; color: #fff; border-bottom: 1px solid #555; padding-bottom: 8px; font-size: 1.2em;">INFORMATIONS DE LIVRAISON</h3>
                 
                 <div class="delivery-grid">
                     <!-- Colonne Identité -->
@@ -249,12 +254,12 @@
                 </div>
 
                 <!-- Notes supplémentaires -->
-                <div class="delivery-card" style="border-left: 4px solid #64b5f6; padding: 15px;">
+                <div class="delivery-card" style="border-left: 4px solid #64b5f6; padding: 12px;">
                     <textarea id="other-info" class="info-input" placeholder="📝 Informations supplémentaires ou instructions pour le livreur..." style="margin-bottom: 0; height: 60px; border-color: #555;"></textarea>
                 </div>
             </div>
             
-            <div style="width: 100%; display: flex; flex-wrap: wrap; gap: 15px; margin-top: 20px;">
+            <div style="width: 100%; display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px;">
                 <button class="btn btn-green" onclick="showOrderRecap()">VALIDER LA COMMANDE</button>
                 <button class="btn btn-red" onclick="resetOrderForm()">VIDER LE PANIER</button>
             </div>
@@ -262,30 +267,30 @@
 
         <!-- Ecran de suivi de commande -->
         <div id="tracking-screen">
-            <h1 style="color: #9c27b0; font-size: 2em; margin-bottom: 10px;">Suivi de Commande</h1>
-            <p style="color: #ccc; margin-bottom: 30px;">Saisissez le <b>code à 6 caractères</b> qui vous a été fourni lors de la validation.</p>
+            <h1 style="color: #9c27b0; font-size: 1.8em; margin-bottom: 10px;">Suivi de Commande</h1>
+            <p style="color: #ccc; margin-bottom: 20px;">Saisissez le <b>code à 6 caractères</b> qui vous a été fourni lors de la validation.</p>
             
-            <div style="width: 60%; margin: 0 auto; display: flex; gap: 15px; align-items: center;">
-                <input type="text" id="track-number" class="info-input" placeholder="Code de suivi (ex: A1B2C3)" maxlength="6" style="border-color:#9c27b0; margin-bottom: 0; font-weight: bold; font-size: 1.2em; text-transform: uppercase;">
-                <button class="btn btn-purple" style="width: 40%;" onclick="searchMyOrders()">RECHERCHER</button>
+            <div style="width: 100%; max-width: 500px; margin: 0 auto; display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                <input type="text" id="track-number" class="info-input" placeholder="Code de suivi (ex: A1B2C3)" maxlength="6" style="border-color:#9c27b0; margin-bottom: 0; font-weight: bold; font-size: 1.1em; text-transform: uppercase; flex: 1;">
+                <button class="btn btn-purple" style="width: auto; padding: 12px 20px;" onclick="searchMyOrders()">RECHERCHER</button>
             </div>
             
             <!-- Résultats de la recherche -->
-            <div id="tracking-results" style="margin-top: 40px; text-align: left;"></div>
+            <div id="tracking-results" style="margin-top: 30px; text-align: left;"></div>
         </div>
 
         <!-- Ecran de succès de la commande -->
         <div id="success-screen">
             <span class="success-icon">✅</span>
-            <h1 style="color: #43a047;">Commande Validée !</h1>
-            <p style="font-size: 1.1em;">La commande a bien été transmise à notre équipe.</p>
+            <h1 style="color: #43a047; font-size: 1.8em;">Commande Validée !</h1>
+            <p style="font-size: 1em;">La commande a bien été transmise à notre équipe.</p>
             
-            <div style="background: rgba(0,0,0,0.5); padding: 25px; border-radius: 12px; border: 2px dashed #ff9800; margin: 30px auto; width: 60%;">
-                <p style="margin: 0; color: #ccc; font-size: 1em;">Votre numéro de suivi (à conserver précieusement) :</p>
-                <h2 style="color: #ff9800; margin: 10px 0 0 0; letter-spacing: 4px; font-size: 2.5em; font-family: monospace;" id="success-tracking-number">------</h2>
+            <div style="background: rgba(0,0,0,0.5); padding: 20px; border-radius: 12px; border: 2px dashed #ff9800; margin: 20px auto; width: 100%; max-width: 500px;">
+                <p style="margin: 0; color: #ccc; font-size: 0.9em;">Votre numéro de suivi (à conserver précieusement) :</p>
+                <h2 style="color: #ff9800; margin: 8px 0 0 0; letter-spacing: 3px; font-size: 2em; font-family: monospace;" id="success-tracking-number">------</h2>
             </div>
 
-            <div style="width: 50%; margin: 20px auto 0;">
+            <div style="width: 100%; max-width: 300px; margin: 20px auto 0;">
                 <button class="btn" onclick="location.reload()">RETOUR À L'ACCUEIL</button>
             </div>
         </div>
@@ -294,17 +299,17 @@
 
     <!-- MODALE : RECAPITULATIF DE COMMANDE -->
     <div id="recap-modal" class="modal-overlay" style="z-index: 2000;">
-        <div class="modal-box" style="width: 550px; border-color: #4caf50;">
-            <h2 style="color: #4caf50; margin-top: 0; font-size: 1.8em;">🛒 Vérification du Panier</h2>
-            <p style="color: #ccc; margin-bottom: 20px;">Veuillez vérifier les informations ci-dessous avant de procéder à l'envoi de la commande.</p>
+        <div class="modal-box" style="width: 500px; border-color: #4caf50;">
+            <h2 style="color: #4caf50; margin-top: 0; font-size: 1.5em;">🛒 Vérification du Panier</h2>
+            <p style="color: #ccc; margin-bottom: 15px; font-size: 0.95em;">Veuillez vérifier les informations ci-dessous avant de procéder à l'envoi de la commande.</p>
             
             <div id="recap-content" class="recap-content">
                 <!-- Le ticket de caisse va se générer ici -->
             </div>
             
-            <div style="display: flex; gap: 15px;">
-                <button class="btn btn-green" onclick="confirmOrder()">CONFIRMER L'ACHAT</button>
-                <button class="btn btn-red" onclick="closeRecapModal()">MODIFIER LE PANIER</button>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button class="btn btn-green" style="flex: 1;" onclick="confirmOrder()">CONFIRMER</button>
+                <button class="btn btn-red" style="flex: 1;" onclick="closeRecapModal()">MODIFIER</button>
             </div>
         </div>
     </div>
@@ -312,53 +317,53 @@
     <!-- MODAL DU FORMULAIRE CV -->
     <div id="cv-modal" class="modal-overlay">
         <div class="modal-box">
-            <h2 style="color: #1976d2; margin-top: 0; font-size: 2em;">Dossier d'Embauche</h2>
-            <p style="color: #ccc; margin-bottom: 30px;">Remplissez les informations ci-dessous pour transmettre votre dossier à la direction.</p>
+            <h2 style="color: #1976d2; margin-top: 0; font-size: 1.6em;">Dossier d'Embauche</h2>
+            <p style="color: #ccc; margin-bottom: 20px; font-size: 0.95em;">Remplissez les informations ci-dessous pour transmettre votre dossier à la direction.</p>
             
             <div class="cv-grid">
                 <div>
                     <h3 class="cv-section-title">👤 Identité & Coordonnées</h3>
-                    <div class="delivery-info-row">
-                        <input type="text" id="cv-firstname" class="info-input" placeholder="Prénom" style="width: 48%; border-color: #1976d2;">
-                        <input type="text" id="cv-lastname" class="info-input" placeholder="Nom" style="width: 48%; border-color: #1976d2;">
+                    <div class="row-inputs">
+                        <input type="text" id="cv-firstname" class="info-input" placeholder="Prénom" style="border-color: #1976d2;">
+                        <input type="text" id="cv-lastname" class="info-input" placeholder="Nom" style="border-color: #1976d2;">
                     </div>
-                    <div class="delivery-info-row">
-                        <input type="number" id="cv-age" class="info-input" placeholder="Âge" style="width: 48%; border-color: #1976d2;">
-                        <input type="number" id="cv-char-id" class="info-input" placeholder="ID Perso" style="width: 48%; border-color: #1976d2;">
+                    <div class="row-inputs">
+                        <input type="number" id="cv-age" class="info-input" placeholder="Âge" style="border-color: #1976d2;">
+                        <input type="number" id="cv-char-id" class="info-input" placeholder="ID Perso" style="border-color: #1976d2;">
                     </div>
                     
-                    <h3 class="cv-section-title" style="margin-top:25px;">📞 Contact & Banque</h3>
-                    <div class="delivery-info-row">
-                        <input type="text" id="cv-phone" class="info-input" placeholder="Numéro de télephone" style="width: 48%; border-color: #1976d2;">
-                        <input type="email" id="cv-email" class="info-input" placeholder="Email (Facultatif)" style="width: 48%; border-color: #1976d2;">
+                    <h3 class="cv-section-title" style="margin-top:20px;">📞 Contact & Banque</h3>
+                    <div class="row-inputs">
+                        <input type="text" id="cv-phone" class="info-input" placeholder="Numéro de téléphone" style="border-color: #1976d2;">
+                        <input type="email" id="cv-email" class="info-input" placeholder="Email (Facultatif)" style="border-color: #1976d2;">
                     </div>
-                    <input type="text" id="cv-iban" class="info-input" placeholder="💳 IBAN" style="border-color: #1976d2; margin-bottom: 15px;">
+                    <input type="text" id="cv-iban" class="info-input" placeholder="💳 IBAN" style="border-color: #1976d2; margin-bottom: 12px;">
                     
-                    <h3 class="cv-section-title" style="margin-top:25px;">🏢 Demande de Poste & Disponibilités</h3>
+                    <h3 class="cv-section-title" style="margin-top:20px;">🏢 Poste & Dispos</h3>
                     <input type="text" id="cv-rank" class="info-input" value="Pompiste / Epicier" disabled title="Ce grade est défini par défaut pour les nouvelles recrues." style="margin-bottom: 10px;">
-                    <input type="text" id="cv-dispo" class="info-input" placeholder="🕒 Vos horaires de disponibilité en ville" style="border-color: #1976d2; margin-bottom: 15px;">
+                    <input type="text" id="cv-dispo" class="info-input" placeholder="🕒 Horaires de disponibilité" style="border-color: #1976d2; margin-bottom: 10px;">
                 </div>
 
                 <div>
                     <h3 class="cv-section-title">💼 Profil du Candidat</h3>
-                    <textarea id="cv-experience" class="info-input" placeholder="Vos expériences" style="height: 70px; margin-bottom: 15px; border-color: #1976d2;"></textarea>
-                    <textarea id="cv-motivation" class="info-input" placeholder="Vos motivations pour nous rejoindre" style="height: 90px; border-color: #1976d2; margin-bottom: 15px;"></textarea>
+                    <textarea id="cv-experience" class="info-input" placeholder="Vos expériences" style="height: 65px; margin-bottom: 12px; border-color: #1976d2;"></textarea>
+                    <textarea id="cv-motivation" class="info-input" placeholder="Vos motivations pour nous rejoindre" style="height: 80px; border-color: #1976d2; margin-bottom: 12px;"></textarea>
                     
-                    <h3 class="cv-section-title" style="margin-top:15px;">🪪 Document Officiel</h3>
+                    <h3 class="cv-section-title" style="margin-top:10px;">🪪 Document Officiel</h3>
                     <!-- Zone de collage pour la Carte d'Identité -->
                     <div class="paste-zone" id="cv-paste-zone" title="Faites CTRL+V ici">
                         <div id="cv-paste-instructions">
-                            <span style="font-size: 2em; display: block; margin-bottom: 5px;">📸</span>
-                            <span style="color: #bbb; font-weight: bold; font-size: 0.9em;">Cliquez ici puis faites <b style="color:white;">CTRL+V</b><br>pour coller votre carte d'identité</span>
+                            <span style="font-size: 1.8em; display: block; margin-bottom: 5px;">📸</span>
+                            <span style="color: #bbb; font-weight: bold; font-size: 0.85em;">Cliquez ici puis <b style="color:white;">CTRL+V</b><br>pour coller votre carte d'identité</span>
                         </div>
                         <img id="cv-paste-preview" class="paste-preview" src="">
                     </div>
                 </div>
             </div>
             
-            <div style="display: flex; gap: 15px; margin-top: 30px;">
-                <button class="btn btn-blue" onclick="submitCV()">SOUMETTRE LE DOSSIER</button>
-                <button class="btn btn-red" onclick="closeCVModal()">ANNULER</button>
+            <div style="display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap;">
+                <button class="btn btn-blue" style="flex: 1;" onclick="submitCV()">SOUMETTRE</button>
+                <button class="btn btn-red" style="flex: 1;" onclick="closeCVModal()">ANNULER</button>
             </div>
         </div>
     </div>
@@ -642,7 +647,7 @@
                 ${recapArticlesHtml}
                 <p style="font-size: 0.9em; color: #aaa;">Frais de livraison : ${zoneFee}$</p>
                 <hr>
-                <p style="font-size: 1.4em; color: #4caf50; font-weight: bold; text-align: right; margin: 0;">Total à régler : ${total.toFixed(2)} $</p>
+                <p style="font-size: 1.3em; color: #4caf50; font-weight: bold; text-align: right; margin: 0;">Total à régler : ${total.toFixed(2)} $</p>
             `;
 
             document.getElementById('recap-modal').style.display = 'flex';
@@ -699,7 +704,7 @@
             container.innerHTML = "";
 
             if(myCivilOrders.length === 0) {
-                container.innerHTML = "<p style='color:#aaa; text-align:center; font-size: 1.1em;'>Aucune commande trouvée pour le code saisi.</p>";
+                container.innerHTML = "<p style='color:#aaa; text-align:center; font-size: 1em;'>Aucune commande trouvée pour le code saisi.</p>";
                 return;
             }
 
@@ -710,14 +715,14 @@
 
                 let card = `
                 <div class="delivery-info-section" style="border-color: ${statusColor}; margin-top: 15px; background: rgba(0,0,0,0.4);">
-                    <div style="display:flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #444; padding-bottom: 10px; margin-bottom: 10px; flex-wrap: wrap;">
-                        <strong style="color: ${statusColor}; font-size: 1.2em;">Statut : ${order.status}</strong>
-                        <span style="color: #aaa; font-size: 0.9em;">📅 ${order.dateCreation}</span>
+                    <div style="display:flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #444; padding-bottom: 8px; margin-bottom: 8px; flex-wrap: wrap;">
+                        <strong style="color: ${statusColor}; font-size: 1.1em;">Statut : ${order.status}</strong>
+                        <span style="color: #aaa; font-size: 0.85em;">📅 ${order.dateCreation}</span>
                     </div>
-                    <p style="margin: 5px 0;"><strong>👤 Client :</strong> <span style="color:#e0e0e0;">${order.client}</span></p>
-                    <p style="margin: 5px 0;"><strong>🛒 Panier :</strong> <span style="color:#e0e0e0;">${order.articles}</span></p>
-                    <p style="margin: 5px 0;"><strong>📍 Livraison :</strong> <span style="color:#e0e0e0;">${order.zone} (${order.dateLivraison})</span></p>
-                    <p style="margin: 8px 0 0 0; color: #4caf50; font-weight: bold; font-size: 1.2em;">💳 Total payé : ${order.total} $</p>
+                    <p style="margin: 4px 0;"><strong>👤 Client :</strong> <span style="color:#e0e0e0;">${order.client}</span></p>
+                    <p style="margin: 4px 0;"><strong>🛒 Panier :</strong> <span style="color:#e0e0e0;">${order.articles}</span></p>
+                    <p style="margin: 4px 0;"><strong>📍 Livraison :</strong> <span style="color:#e0e0e0;">${order.zone} (${order.dateLivraison})</span></p>
+                    <p style="margin: 6px 0 0 0; color: #4caf50; font-weight: bold; font-size: 1.1em;">💳 Total payé : ${order.total} $</p>
                 </div>`;
                 container.innerHTML += card;
             });
@@ -732,11 +737,10 @@
             const phone = document.getElementById("cv-phone").value.trim();
             const email = document.getElementById("cv-email").value.trim() || "Non renseigné";
             const iban = document.getElementById("cv-iban").value.trim();
-            const dispo = document.getElementById("cv-dispo").value.trim(); // Nouveau champ
+            const dispo = document.getElementById("cv-dispo").value.trim();
             const experience = document.getElementById("cv-experience").value.trim();
             const motivation = document.getElementById("cv-motivation").value.trim();
 
-            // Ajout du champ dispo dans la vérification
             if(!prenom || !nom || !age || !charId || !phone || !iban || !experience || !motivation || !dispo) {
                 return showToast("Veuillez remplir tous les champs obligatoires !", "error");
             }
@@ -754,7 +758,7 @@
                 email: email,
                 iban: iban,
                 poste: "Pompiste / Epicier",
-                dispo: dispo, // Ajout des disponibilités au dossier Firebase
+                dispo: dispo,
                 experience: experience,
                 motivation: motivation,
                 idCard: currentIDCardBase64, 
@@ -775,7 +779,7 @@
                     document.getElementById("cv-phone").value = "";
                     document.getElementById("cv-email").value = "";
                     document.getElementById("cv-iban").value = "";
-                    document.getElementById("cv-dispo").value = ""; // Remise à zéro
+                    document.getElementById("cv-dispo").value = "";
                     document.getElementById("cv-experience").value = "";
                     document.getElementById("cv-motivation").value = "";
                     
